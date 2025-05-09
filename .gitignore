@@ -1,0 +1,42 @@
+# Ambiente virtual
+.venv/
+venv/
+ENV/
+
+# Arquivos de cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Arquivos específicos do macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Arquivos específicos do Power Paste
+~/.power_paste_history.json
+~/.power_paste_temp_images/
+
+# Arquivos de distribuição / packaging
+dist/
+build/
+*.egg-info/
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+
+# Arquivos do IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace 
