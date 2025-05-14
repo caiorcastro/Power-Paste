@@ -132,7 +132,8 @@ def copy_selected_text_to_clipboard(text):
 class PowerPasteApp(rumps.App):
     def __init__(self):
         super(PowerPasteApp, self).__init__(
-            "📋", # Ícone Unicode simples
+            name="Power Paste",
+            icon="icon.png",
             title=None  # Remove o título ao lado do ícone
         )
         # Garantir que o diretório de imagens exista

@@ -1,104 +1,103 @@
 # Power Paste
 
-<p align="center">
-  <img src="icon.png" alt="Power Paste Logo" width="128" height="128">
-</p>
+Um gerenciador de área de transferência para macOS que permite salvar e reutilizar textos copiados, com suporte a formatação rica (RTF).
 
-## 📋 Gerenciador de Área de Transferência para macOS
+## Funcionalidades
 
-Power Paste é um utilitário leve e eficiente que monitora e gerencia seu histórico de área de transferência no macOS, permitindo acesso rápido aos itens copiados anteriormente, tanto textos quanto imagens.
+- Salva automaticamente textos copiados
+- Suporta formatação rica (RTF)
+- Interface minimalista na barra de menus
+- Inicia automaticamente com o sistema
+- Atalhos de teclado para acesso rápido
+- Suporte a múltiplos itens na área de transferência
 
-### ✨ Características
+## Requisitos
 
-- **Monitoramento contínuo** da área de transferência
-- **Suporte para texto e imagens**
-- **Interface integrada** na barra de menus do macOS
-- **Visualização rápida** do histórico de cópias
-- **Seleção parcial** de texto através do TextEdit
-- **Persistência** do histórico entre reinicializações
-- **Múltiplos métodos de acesso** à área de transferência para máxima compatibilidade
+- macOS 10.15 ou superior
+- Python 3.8 ou superior
+- pip (gerenciador de pacotes Python)
 
-### 🔧 Requisitos
-
-- macOS 10.14 ou superior
-- Python 3.7+
-- Dependências listadas em `requirements.txt`
-
-### 📦 Instalação
+## Instalação
 
 1. Clone este repositório:
-```
-git clone https://github.com/caiorcastro/Power-Paste.git
-cd Power-Paste
+```bash
+git clone https://github.com/seu-usuario/power-paste.git
+cd power-paste
 ```
 
-2. Crie e ative um ambiente virtual Python:
-```
+2. Crie e ative um ambiente virtual:
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
 3. Instale as dependências:
-```
+```bash
 pip install -r requirements.txt
 ```
 
-4. Execute o aplicativo:
+4. Instale o aplicativo:
+```bash
+python3 setup.py py2app
 ```
-python power_paste.py
+
+5. Copie o aplicativo para a pasta de aplicativos:
+```bash
+mkdir -p ~/Applications/PowerPaste
+cp -r dist/Power\ Paste.app ~/Applications/PowerPaste/
 ```
 
-### 💡 Uso
+6. Configure o início automático:
+```bash
+mkdir -p ~/Library/LaunchAgents
+printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>com.caiorcastro.powerpaste</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>open</string>\n        <string>%s/Applications/PowerPaste/Power Paste.app</string>\n    </array>\n    <key>RunAtLoad</key>\n    <true/>\n    <key>ProcessType</key>\n    <string>Interactive</string>\n</dict>\n</plist>' "$HOME" > ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
+launchctl load ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
+```
 
-1. Após iniciar o aplicativo, você verá um ícone de prancheta (📋) na barra de menus
-2. Copie qualquer texto ou imagem normalmente (Cmd+C)
-3. Clique no ícone da barra de menus para ver o histórico de itens copiados
-4. Selecione um item para:
-   - **Texto**: Abrirá no TextEdit para seleção parcial
-   - **Imagens**: Serão copiadas diretamente para a área de transferência
+## Uso
 
-### 🔄 Funcionalidades detalhadas
+1. O Power Paste aparecerá como um ícone na barra de menus do macOS
+2. Clique no ícone para ver os textos salvos
+3. Clique em um texto salvo para copiá-lo novamente
+4. Use o menu para limpar a lista ou sair do aplicativo
 
-#### Gerenciamento de texto
-- Ao clicar em um item de texto, abre-se o TextEdit com o conteúdo completo
-- Você pode selecionar apenas partes específicas do texto
-- O texto selecionado pode ser copiado com Cmd+C
+## Desinstalação
 
-#### Gerenciamento de imagens
-- As imagens são automaticamente convertidas para PNG
-- Ao selecionar uma imagem do histórico, ela é copiada para a área de transferência
-- Suporte para vários formatos de imagem
+1. Pare o aplicativo:
+```bash
+launchctl unload ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
+```
 
-#### Opções adicionais
-- **Limpar Histórico**: Remove todos os itens do histórico
-- **Sobre Power Paste**: Exibe informações sobre o aplicativo
+2. Remova os arquivos:
+```bash
+rm -rf ~/Applications/PowerPaste
+rm ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
+```
 
-### 🛠️ Tecnologias utilizadas
+## Desenvolvimento
 
-- **Python**: Linguagem principal
-- **rumps**: Interface da barra de menus do macOS
-- **pyperclip**: Acesso básico à área de transferência
-- **pyobjc**: APIs nativas do macOS
-- **Pillow**: Manipulação de imagens
+Para desenvolver ou modificar o aplicativo:
 
-### 📝 Notas
+1. Clone o repositório
+2. Crie e ative o ambiente virtual
+3. Instale as dependências de desenvolvimento:
+```bash
+pip install -r requirements-dev.txt
+```
 
-- O histórico é armazenado em `~/.power_paste_history.json`
-- As imagens são armazenadas temporariamente em `~/.power_paste_temp_images/`
-- O histórico é mantido por 7 dias por padrão
+4. Execute o aplicativo em modo de desenvolvimento:
+```bash
+python3 power_paste.py
+```
 
-### 🧰 Solução de problemas
+## Licença
 
-Se encontrar problemas ao colar itens em determinados aplicativos, o Power Paste implementa múltiplos métodos de acesso à área de transferência como fallback:
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-1. APIs nativas NSPasteboard (AppKit)
-2. Utilitários de linha de comando (pbcopy/pbpaste)
-3. AppleScript
+## Contribuindo
 
-### 📜 Licença
-
-Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para detalhes.
-
----
-
-Desenvolvido com ❤️ para simplificar o fluxo de trabalho no macOS. 
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request 
