@@ -244,7 +244,7 @@ class PowerPasteApp(rumps.App):
             )
             
             # Adiciona os itens ao menu
-            for item in items_to_show:
+            for idx, item in enumerate(items_to_show):
                 # Obtém o timestamp formatado
                 try:
                     item_timestamp = datetime.strptime(
@@ -267,69 +267,91 @@ class PowerPasteApp(rumps.App):
                     
                     title = f"{display_time} | {preview}"
                     
+                    # Cria o item de menu para texto
+                    menu_item = rumps.MenuItem(title)
+                    menu_item._idx = idx  # Associa um índice ao invés do objeto completo
+                    menu_item.set_callback(self.paste_text_item)
+                    self.menu.add(menu_item)
+                    
                 elif item.get("type") == "image":
-                    # Indica que é uma imagem com emoji
+                    # Cria item direto para abrir no Preview
                     title = f"{display_time} | 🖼️ Imagem"
+                    menu_item = rumps.MenuItem(title)
+                    menu_item._idx = idx
+                    menu_item.set_callback(self.open_image_in_preview)
+                    self.menu.add(menu_item)
                 else:
                     # Tipo desconhecido
                     title = f"{display_time} | Item desconhecido"
-                
-                # Cria o item de menu
-                menu_item = rumps.MenuItem(title, callback=self.paste_item)
-                menu_item.represented_object = item
-                self.menu.add(menu_item)
+                    menu_item = rumps.MenuItem(title)
+                    self.menu.add(menu_item)
 
-    def paste_item(self, sender):
-        """Cola o item selecionado ou mostra janela para seleção parcial."""
+    def paste_text_item(self, sender):
+        """Manipula a seleção de um item de texto do menu."""
         try:
-            item = sender.represented_object
-            if not item:
+            idx = getattr(sender, "_idx", None)
+            if idx is None or idx >= len(self.history):
+                rumps.notification("Power Paste", "Erro", "Item não encontrado")
                 return
                 
-            item_type = item.get("type")
-            content = item.get("content")
+            item = self.history[idx]
+            if item.get("type") != "text":
+                rumps.notification("Power Paste", "Erro", "Item não é texto")
+                return
+                
+            text = item.get("content")
+            if not text:
+                rumps.notification("Power Paste", "Erro", "Texto vazio")
+                return
+                
+            # Exibe o popup com o texto completo e opções
+            self.show_text_selection_window(text)
             
-            if item_type == "text" and content:
-                # Exibe o popup com o texto completo e opções
-                self.show_text_selection_window(content)
-                
-            elif item_type == "image" and content:
-                # Verifica se a imagem ainda existe
-                if not os.path.exists(content):
-                    rumps.notification(
-                        "Power Paste", 
-                        "Erro", 
-                        "Arquivo de imagem não encontrado"
-                    )
-                    return
-                
-                # Usa a função nativa para copiar imagem
-                if copy_image_to_clipboard_native(content):
-                    rumps.notification(
-                        "Power Paste", 
-                        "Imagem copiada", 
-                        "Use Cmd+V para colar"
-                    )
-                else:
-                    # Se falhar, tenta abrir a imagem diretamente
-                    rumps.notification(
-                        "Power Paste", 
-                        "Aviso", 
-                        "Tente copiar a imagem manualmente"
-                    )
-                    try:
-                        subprocess.run(['open', content], check=False)
-                    except:
-                        pass
-                    
         except Exception as e:
-            print(f"Erro ao manipular item: {e}")
-            rumps.notification(
-                "Power Paste", 
-                "Erro", 
-                "Falha ao processar item"
-            )
-    
+            print(f"Erro ao manipular item de texto: {e}")
+            rumps.notification("Power Paste", "Erro", f"Falha: {str(e)}")
+
+    def open_image_in_preview(self, sender):
+        """Abre a imagem no Preview."""
+        rumps.notification("Power Paste", "Debug", "Tentando abrir no Preview")
+        print("[DEBUG] open_image_in_preview chamado")
+        
+        try:
+            idx = getattr(sender, "_idx", None)
+            if idx is None or idx >= len(self.history):
+                rumps.notification("Power Paste", "Erro", "Item não encontrado")
+                return
+                
+            item = self.history[idx]
+            if item.get("type") != "image":
+                rumps.notification("Power Paste", "Erro", "Item não é uma imagem")
+                return
+                
+            content = item.get("content")
+            if not content or not os.path.exists(content):
+                rumps.notification("Power Paste", "Erro", "Arquivo de imagem não encontrado")
+                return
+                
+            # Caminho absoluto da imagem
+            abs_path = os.path.abspath(content)
+            print(f"[DEBUG] Caminho da imagem: {abs_path}")
+            
+            # Executa o comando de forma mais direta e robusta
+            result = subprocess.run(['open', '-a', 'Preview', abs_path], 
+                               capture_output=True, 
+                               text=True)
+            
+            if result.returncode == 0:
+                rumps.notification("Power Paste", "Sucesso", "Imagem aberta no Preview")
+            else:
+                error = result.stderr.strip() if result.stderr else "Erro desconhecido"
+                rumps.notification("Power Paste", "Erro", f"Falha ao abrir: {error}")
+                print(f"[DEBUG] Erro: {error}")
+                
+        except Exception as e:
+            print(f"[DEBUG] Exceção: {str(e)}")
+            rumps.notification("Power Paste", "Erro", f"Falha: {str(e)}")
+
     def show_text_selection_window(self, text):
         """
         Exibe uma janela de seleção de texto usando APIs nativas do macOS
@@ -409,9 +431,11 @@ class PowerPasteApp(rumps.App):
         """Mostra informações sobre o aplicativo."""
         rumps.alert(
             "Power Paste", 
-            "Desenvolvido por Caio Castro\n\n"
+            "Power Paste 1.2\n\n"
+            "Um gerenciador de área de transferência eficiente e prático.\n\n"
+            "Desenvolvido por Caio Castro\n"
             "LinkedIn: linkedin.com/in/caiorcastro\n\n"
-            "Versão 1.0.0"
+            "Atalho: Ctrl+Cmd+V"
         )
 
     def check_clipboard(self, _):

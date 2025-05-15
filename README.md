@@ -15,15 +15,17 @@
   <img src="https://img.shields.io/badge/macOS-10.15+-blue?style=flat-square&logo=apple" alt="macOS">
   <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Version-1.2-orange?style=flat-square" alt="Version">
 </p>
 
 ## ✨ Funcionalidades
 
 - 📋 Salva automaticamente as últimas 25 cópias
+- 🖼️ Suporte para imagens com visualização no Preview
 - 🎨 Suporta formatação rica (RTF)
 - 🖥️ Interface minimalista na barra de menus
 - 🔄 Inicia automaticamente com o sistema
-- ⌨️ Atalhos de teclado para acesso rápido
+- ⌨️ Atalho de teclado (Ctrl+Cmd+V) para acesso rápido
 - 📝 Suporte a múltiplos itens na área de transferência
 
 ## 🚀 Instalação
@@ -66,9 +68,10 @@ launchctl load ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
 ## 💡 Uso
 
 1. O Power Paste aparecerá como um ícone na barra de menus do macOS
-2. Clique no ícone para ver os textos salvos
-3. Clique em um texto salvo para copiá-lo novamente
-4. Use o menu para limpar a lista ou sair do aplicativo
+2. Clique no ícone ou use o atalho Ctrl+Cmd+V para ver os itens salvos
+3. Clique em um texto para copiá-lo ou editá-lo
+4. Clique em uma imagem para abri-la no Preview
+5. Use o menu para limpar a lista ou sair do aplicativo
 
 ## 🗑️ Desinstalação
 
@@ -114,5 +117,5 @@ Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICE
 ---
 
 <p align="center">
-  Desenvolvido com ❤️ por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a>
+  Desenvolvido por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a>
 </p> 
