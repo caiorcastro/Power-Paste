@@ -409,9 +409,9 @@ class PowerPasteApp(rumps.App):
         """Mostra informações sobre o aplicativo."""
         rumps.alert(
             "Power Paste", 
-            "Gerenciador de área de transferência para macOS\n\n"
-            "Desenvolvido para facilitar o acesso ao histórico de cópias.\n\n"
-            "Use o menu para acessar textos e imagens copiados anteriormente."
+            "Desenvolvido por Caio Castro\n\n"
+            "LinkedIn: linkedin.com/in/caiorcastro\n\n"
+            "Versão 1.0.0"
         )
 
     def check_clipboard(self, _):

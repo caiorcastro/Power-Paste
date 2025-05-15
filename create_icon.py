@@ -1,21 +1,29 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 
-# Criar uma imagem 32x32 pixels com fundo transparente
-icon = Image.new('RGBA', (32, 32), color=(0, 0, 0, 0))
-draw = ImageDraw.Draw(icon)
+# Criar uma nova imagem com fundo transparente
+img = Image.new('RGBA', (18, 18), (0, 0, 0, 0))
+draw = ImageDraw.Draw(img)
 
-# Desenhar um círculo como fundo
-draw.ellipse((1, 1, 31, 31), fill=(52, 152, 219, 255), outline=(41, 128, 185, 255))
+# Cores
+primary = (52, 152, 219, 255)  # Azul principal
+secondary = (41, 128, 185, 255)  # Azul escuro para contorno
+white = (255, 255, 255, 255)  # Branco
 
-# Adicionar uma letra "P" ao centro
-# Como não temos certeza de quais fontes estão disponíveis no sistema, vamos usar um método alternativo
-# para desenhar um "P" 
-draw.rectangle((10, 8, 16, 24), fill=(255, 255, 255, 255))
-draw.rectangle((10, 8, 22, 14), fill=(255, 255, 255, 255))
-draw.rectangle((10, 15, 22, 21), fill=(255, 255, 255, 255))
+# Desenhar o círculo de fundo com gradiente suave
+draw.ellipse((0, 0, 17, 17), fill=primary, outline=secondary)
 
-# Salvar o ícone
-icon.save('icon.png')
+# Desenhar o símbolo de copiar (documento)
+# Documento principal
+draw.rectangle((4, 3, 14, 15), fill=white, outline=secondary)
+# Linha superior do documento
+draw.line([(4, 6), (14, 6)], fill=secondary, width=1)
+# Linha do meio do documento
+draw.line([(4, 9), (14, 9)], fill=secondary, width=1)
+# Linha inferior do documento
+draw.line([(4, 12), (14, 12)], fill=secondary, width=1)
+
+# Salvar a imagem
+img.save('icon.png')
 
 print(f"Ícone criado com sucesso em: {os.path.abspath('icon.png')}") 
