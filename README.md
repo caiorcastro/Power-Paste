@@ -1,31 +1,40 @@
 # Power Paste
 
-Um gerenciador de área de transferência para macOS que permite salvar e reutilizar textos copiados, com suporte a formatação rica (RTF).
+<p align="center">
+  <img src="icon.png" alt="Power Paste Logo" width="128" height="128">
+</p>
 
-## Funcionalidades
+<p align="center">
+  <b>Gerenciador de Área de Transferência para macOS</b>
+</p>
 
-- Salva automaticamente textos copiados
-- Suporta formatação rica (RTF)
-- Interface minimalista na barra de menus
-- Inicia automaticamente com o sistema
-- Atalhos de teclado para acesso rápido
-- Suporte a múltiplos itens na área de transferência
+<p align="center">
+  <a href="https://www.linkedin.com/in/caiorcastro/">
+    <img src="https://img.shields.io/badge/LinkedIn-Caio%20Castro-blue?style=flat-square&logo=linkedin" alt="LinkedIn">
+  </a>
+  <img src="https://img.shields.io/badge/macOS-10.15+-blue?style=flat-square&logo=apple" alt="macOS">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+</p>
 
-## Requisitos
+## ✨ Funcionalidades
 
-- macOS 10.15 ou superior
-- Python 3.8 ou superior
-- pip (gerenciador de pacotes Python)
+- 📋 Salva automaticamente as últimas 25 cópias
+- 🎨 Suporta formatação rica (RTF)
+- 🖥️ Interface minimalista na barra de menus
+- 🔄 Inicia automaticamente com o sistema
+- ⌨️ Atalhos de teclado para acesso rápido
+- 📝 Suporte a múltiplos itens na área de transferência
 
-## Instalação
+## 🚀 Instalação
 
-1. Clone este repositório:
+1. Clone o repositório:
 ```bash
-git clone https://github.com/seu-usuario/power-paste.git
-cd power-paste
+git clone https://github.com/caiorcastro/Power-Paste.git
+cd Power-Paste
 ```
 
-2. Crie e ative um ambiente virtual:
+2. Crie e ative o ambiente virtual:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -54,14 +63,14 @@ printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple
 launchctl load ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
 ```
 
-## Uso
+## 💡 Uso
 
 1. O Power Paste aparecerá como um ícone na barra de menus do macOS
 2. Clique no ícone para ver os textos salvos
 3. Clique em um texto salvo para copiá-lo novamente
 4. Use o menu para limpar a lista ou sair do aplicativo
 
-## Desinstalação
+## 🗑️ Desinstalação
 
 1. Pare o aplicativo:
 ```bash
@@ -74,7 +83,7 @@ rm -rf ~/Applications/PowerPaste
 rm ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
 ```
 
-## Desenvolvimento
+## 👨‍💻 Desenvolvimento
 
 Para desenvolver ou modificar o aplicativo:
 
@@ -90,14 +99,20 @@ pip install -r requirements-dev.txt
 python3 power_paste.py
 ```
 
-## Licença
+## 📝 Licença
 
 Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## Contribuindo
+## 🤝 Contribuindo
 
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
 3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
 4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request 
+5. Abra um Pull Request
+
+---
+
+<p align="center">
+  Desenvolvido com ❤️ por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a>
+</p> 

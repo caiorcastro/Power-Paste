@@ -17,7 +17,7 @@ import threading
 # Configurações
 HISTORY_FILE = os.path.expanduser("~/.power_paste_history.json")
 TEMP_IMAGE_DIR = os.path.expanduser("~/.power_paste_temp_images")
-MAX_ITEMS_TO_SHOW = 15  # Limita o número de itens no menu
+MAX_ITEMS_TO_SHOW = 25  # Limita o número de itens no menu
 LAST_ITEM_HASH = None  # Rastreia o último item processado
 
 # Funções de manipulação da área de transferência usando APIs nativas
