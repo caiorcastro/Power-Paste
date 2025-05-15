@@ -18,6 +18,73 @@
   <img src="https://img.shields.io/badge/Version-1.2-orange?style=flat-square" alt="Version">
 </p>
 
+## Sobre o Projeto
+
+Power Paste é um gerenciador de área de transferência para macOS que armazena automaticamente seu histórico de cópias, incluindo textos e imagens.
+
+## Recursos
+
+- 📋 Histórico de cópias de texto e imagens
+- 🔄 Interface simples na barra de menus
+- 🖼️ Visualização de imagens diretamente no Preview
+- 🚀 Atalho de teclado para acesso rápido (Ctrl+Cmd+V)
+- 🔍 Visualização e edição de texto antes de colar
+- 🌙 Integração nativa com macOS
+- 🔐 Armazenamento local de dados (não envia dados para a nuvem)
+
+## Instalação
+
+### Método 1: Instalador DMG (Recomendado)
+
+1. Baixe o arquivo [Power Paste Installer.dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.dmg)
+2. Monte a imagem DMG clicando duas vezes no arquivo baixado
+3. Arraste o aplicativo "Power Paste" para a pasta Aplicativos
+   
+   OU
+   
+   Execute o script "install.command" para instalação automática com:
+   - Configuração de inicialização automática com o sistema
+   - Remoção de versões anteriores
+   - Inicialização imediata do aplicativo
+
+### Método 2: Compilação manual
+
+```bash
+# Clone o repositório
+git clone https://github.com/caiorcastro/Power-Paste.git
+cd Power-Paste
+
+# Instale as dependências
+pip install -r requirements.txt
+
+# Construa o aplicativo
+python setup.py py2app
+```
+
+## Uso
+
+1. O ícone do Power Paste aparecerá na barra de menus do macOS
+2. Clique no ícone para ver o histórico de cópias
+3. Selecione um item para copiá-lo ou visualizá-lo:
+   - Itens de texto: Abrem uma janela de pré-visualização
+   - Imagens: Abrem diretamente no Preview
+
+## Atalhos
+
+- `Ctrl+Cmd+V`: Abre o menu do Power Paste
+
+## Como Contribuir
+
+Contribuições são bem-vindas! Sinta-se à vontade para enviar um Pull Request.
+
+## Licença
+
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
+
+## Contato
+
+Caio Castro - [LinkedIn](https://www.linkedin.com/in/caiorcastro/)
+
 ## ✨ Funcionalidades
 
 - 📋 Salva automaticamente as últimas 25 cópias
@@ -101,10 +168,6 @@ pip install -r requirements-dev.txt
 ```bash
 python3 power_paste.py
 ```
-
-## 📝 Licença
-
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## 🤝 Contribuindo
 
