@@ -34,24 +34,35 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 
 ## Instalação
 
-### Método 1: Instalador DMG com Interface Amigável (Recomendado)
+### Método 1: Instalador DMG sem necessidade de senha de administrador
 
-1. Baixe o arquivo [Power Paste Installer (Amigável).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Amigavel.dmg)
+1. Baixe o arquivo [Power Paste Installer (Sem Admin).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Sem.Admin.dmg)
 2. Monte a imagem DMG clicando duas vezes no arquivo baixado
 3. Clique duas vezes no arquivo "install.command"
-4. Siga as instruções amigáveis na tela de instalação:
-   - O assistente perguntará se você deseja iniciar o app automaticamente com o sistema
-   - Também perguntará se deseja iniciar o app imediatamente após a instalação
-   - Não é necessário conhecimento técnico!
+4. Quando perguntado sobre o local de instalação, escolha **"Pasta de Usuário"**
+5. Siga as instruções amigáveis na tela
+6. Não é necessário senha de administrador!
 
-### Método 2: Instalação Manual
+O instalador permite que você:
+- Instale na pasta Applications do seu usuário pessoal
+- Configure para iniciar automaticamente com o sistema
+- Inicie o aplicativo imediatamente
+
+### Método 2: Instalador DMG para todo o sistema (requer senha)
+
+Se preferir instalar para todos os usuários do computador:
+1. Baixe o instalador mencionado acima
+2. Escolha "Sistema (requer senha)" quando perguntado sobre o local de instalação
+3. Você precisará fornecer uma senha de administrador quando solicitado
+
+### Método 3: Instalação Manual
 
 Você também pode simplesmente:
 1. Baixar o arquivo DMG
 2. Montar a imagem DMG clicando duas vezes no arquivo baixado
-3. Arrastar o ícone do Power Paste para a pasta de Aplicativos
+3. Arrastar o ícone do Power Paste para a pasta de Aplicativos do seu usuário (~USERNAME/Applications)
 
-### Método 3: Compilação manual
+### Método 4: Compilação manual
 
 ```bash
 # Clone o repositório
