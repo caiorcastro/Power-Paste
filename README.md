@@ -1,7 +1,7 @@
 # Power Paste
 
 <p align="center">
-  <img src="icon.png" alt="Power Paste Logo" width="128" height="128">
+  <img src="./icon.png" alt="Power Paste Logo" width="128" height="128">
 </p>
 
 <p align="center">
@@ -15,7 +15,8 @@
   <img src="https://img.shields.io/badge/macOS-10.15+-blue?style=flat-square&logo=apple" alt="macOS">
   <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Version-1.2-orange?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.3-orange?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/Languages-PT--BR%20|%20PT--PT%20|%20EN-yellow?style=flat-square" alt="Languages">
 </p>
 
 ## Sobre o Projeto
@@ -31,6 +32,8 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 - 🔍 Visualização e edição de texto antes de colar
 - 🌙 Integração nativa com macOS
 - 🔐 Armazenamento local de dados (não envia dados para a nuvem)
+- 🌐 Suporte a três idiomas: Português do Brasil (🇧🇷), Português de Portugal (🇵🇹) e Inglês (🇺🇸)
+- ⚙️ Configurações personalizáveis (idioma, tamanho do histórico, inicialização)
 
 ## Instalação
 
@@ -39,9 +42,14 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 1. Baixe o arquivo [Power Paste.dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.dmg)
 2. Monte a imagem DMG clicando duas vezes no arquivo baixado
 3. Clique duas vezes no arquivo "install.command"
-4. Pronto! A instalação é totalmente automática
+4. Escolha seu idioma preferido: 
+   - 🇧🇷 Português do Brasil
+   - 🇵🇹 Português de Portugal
+   - 🇺🇸 English (Inglês)
+5. Pronto! A instalação é totalmente automática
 
 O instalador faz tudo para você:
+- Permite escolher seu idioma preferido
 - Instala o app na pasta Applications do seu usuário 
 - Remove versões antigas que possam estar causando conflitos
 - Inicia o Power Paste automaticamente
@@ -64,6 +72,17 @@ Se preferir, você pode simplesmente:
 3. Selecione qualquer item para:
    - Textos: Visualizar/editar e depois copiar
    - Imagens: Abrir diretamente no Preview
+4. Acesse as configurações através do menu para personalizar o aplicativo
+
+## Configurações
+
+O Power Paste oferece uma tela de configurações onde você pode:
+
+- 🌐 Alterar o idioma do aplicativo (sem precisar reinstalar)
+- 📊 Ajustar o número máximo de itens salvos no histórico
+- 🔄 Ativar ou desativar a inicialização automática com o sistema
+
+Para acessar as configurações, clique no ícone do Power Paste na barra de menus e selecione "Configurações".
 
 ## Atalhos de Teclado
 - `Ctrl+Cmd+V`: Abre o menu do Power Paste
@@ -82,15 +101,16 @@ Caio Castro - [LinkedIn](https://www.linkedin.com/in/caiorcastro/)
 
 ## ✨ Funcionalidades
 
-- 📋 Salva automaticamente as últimas 25 cópias
+- 📋 Salva automaticamente as últimas 25 cópias (configurável)
 - 🖼️ Suporte para imagens com visualização no Preview
 - 🎨 Suporta formatação rica (RTF)
 - 🖥️ Interface minimalista na barra de menus
 - 🔄 Inicia automaticamente com o sistema
 - ⌨️ Atalho de teclado (Ctrl+Cmd+V) para acesso rápido
 - 📝 Suporte a múltiplos itens na área de transferência
+- ⚙️ Configurações personalizáveis
 
-## 🚀 Instalação
+## 🚀 Instalação para Desenvolvedores
 
 1. Clone o repositório:
 ```bash
@@ -109,31 +129,31 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Instale o aplicativo:
+4. Execute o aplicativo em modo de desenvolvimento:
 ```bash
-python3 setup.py py2app
+python3 power_paste.py
 ```
 
-5. Copie o aplicativo para a pasta de aplicativos:
+## 🔨 Criando o DMG para Distribuição
+
+Para gerar o arquivo DMG para distribuição, use o script `create_dmg.py`:
+
 ```bash
-mkdir -p ~/Applications/PowerPaste
-cp -r dist/Power\ Paste.app ~/Applications/PowerPaste/
+# Ative o ambiente virtual
+source .venv/bin/activate
+
+# Execute o script de criação de DMG
+./create_dmg.py
 ```
 
-6. Configure o início automático:
-```bash
-mkdir -p ~/Library/LaunchAgents
-printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n    <key>Label</key>\n    <string>com.caiorcastro.powerpaste</string>\n    <key>ProgramArguments</key>\n    <array>\n        <string>open</string>\n        <string>%s/Applications/PowerPaste/Power Paste.app</string>\n    </array>\n    <key>RunAtLoad</key>\n    <true/>\n    <key>ProcessType</key>\n    <string>Interactive</string>\n</dict>\n</plist>' "$HOME" > ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
-launchctl load ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
-```
+Isso irá:
+1. Limpar compilações anteriores
+2. Compilar o aplicativo usando py2app
+3. Criar uma estrutura de diretórios para o DMG
+4. Gerar um único instalador simplificado
+5. Criar o arquivo DMG final chamado "Power Paste.dmg"
 
-## 💡 Uso
-
-1. O Power Paste aparecerá como um ícone na barra de menus do macOS
-2. Clique no ícone ou use o atalho Ctrl+Cmd+V para ver os itens salvos
-3. Clique em um texto para copiá-lo ou editá-lo
-4. Clique em uma imagem para abri-la no Preview
-5. Use o menu para limpar a lista ou sair do aplicativo
+O DMG contém apenas um único instalador, facilitando a distribuição e instalação.
 
 ## 🗑️ Desinstalação
 
@@ -145,7 +165,9 @@ launchctl unload ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
 2. Remova os arquivos:
 ```bash
 rm -rf ~/Applications/PowerPaste
+rm -rf ~/Applications/Power\ Paste.app
 rm ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
+rm -rf ~/.power_paste
 ```
 
 ## 👨‍💻 Desenvolvimento
@@ -156,7 +178,7 @@ Para desenvolver ou modificar o aplicativo:
 2. Crie e ative o ambiente virtual
 3. Instale as dependências de desenvolvimento:
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements.txt
 ```
 
 4. Execute o aplicativo em modo de desenvolvimento:

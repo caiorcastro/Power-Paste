@@ -11,8 +11,8 @@ OPTIONS = {
         "CFBundleDisplayName": "Power Paste",
         "CFBundleGetInfoString": "Gerenciador de área de transferência para macOS",
         "CFBundleIdentifier": "com.caiorcastro.powerpaste",
-        "CFBundleVersion": "1.0.0",
-        "CFBundleShortVersionString": "1.0.0",
+        "CFBundleVersion": "1.3.0",
+        "CFBundleShortVersionString": "1.3.0",
         "NSHumanReadableCopyright": "Copyright © 2024 Caio Castro",
         "LSUIElement": 1,
     }

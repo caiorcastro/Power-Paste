@@ -17,8 +17,225 @@ import threading
 # Configurações
 HISTORY_FILE = os.path.expanduser("~/.power_paste_history.json")
 TEMP_IMAGE_DIR = os.path.expanduser("~/.power_paste_temp_images")
+LANGUAGE_FILE = os.path.expanduser("~/.power_paste/language")
+CONFIG_FILE = os.path.expanduser("~/.power_paste/config.json")
 MAX_ITEMS_TO_SHOW = 25  # Limita o número de itens no menu
 LAST_ITEM_HASH = None  # Rastreia o último item processado
+DEFAULT_CONFIG = {
+    "max_items": 25,
+    "start_at_login": True,
+    "language": "pt_BR"
+}
+
+# Dicionário de traduções
+TRANSLATIONS = {
+    "pt_BR": {
+        "clipboard_empty": "Histórico vazio",
+        "clear_history": "Limpar Histórico",
+        "about": "Sobre Power Paste",
+        "quit": "Sair",
+        "confirm_clear": "Deseja realmente limpar todo o histórico?",
+        "confirm_yes": "Sim",
+        "confirm_no": "Não",
+        "history_cleared": "Histórico limpo",
+        "notice": "Aviso",
+        "error": "Erro",
+        "copy_success": "Texto copiado para a área de transferência",
+        "copy_error": "Erro ao copiar texto",
+        "image_open_error": "Erro ao abrir imagem",
+        "image_not_found": "Arquivo de imagem não encontrado",
+        "image_opened": "Imagem aberta no Preview",
+        "copy": "Copiar",
+        "cancel": "Cancelar",
+        "text_preview": "Visualização de Texto",
+        "developed_by": "Desenvolvido por Caio Castro",
+        "version": "Versão 1.3",
+        "linkedIn": "LinkedIn: linkedin.com/in/caiorcastro",
+        "github": "GitHub: github.com/caiorcastro/Power-Paste",
+        "language": "Idioma: Português do Brasil",
+        "settings": "Configurações",
+        "max_items_label": "Número máximo de itens no histórico:",
+        "start_at_login_label": "Iniciar com o sistema:",
+        "language_label": "Idioma:",
+        "save_button": "Salvar",
+        "settings_saved": "Configurações salvas com sucesso!",
+        "restart_required": "Algumas mudanças podem exigir reiniciar o aplicativo.",
+        "settings_title": "Configurações do Power Paste"
+    },
+    "pt_PT": {
+        "clipboard_empty": "Histórico vazio",
+        "clear_history": "Limpar Histórico",
+        "about": "Sobre Power Paste",
+        "quit": "Sair",
+        "confirm_clear": "Deseja realmente limpar todo o histórico?",
+        "confirm_yes": "Sim",
+        "confirm_no": "Não",
+        "history_cleared": "Histórico limpo",
+        "notice": "Aviso",
+        "error": "Erro",
+        "copy_success": "Texto copiado para a área de transferência",
+        "copy_error": "Erro ao copiar texto",
+        "image_open_error": "Erro ao abrir imagem",
+        "image_not_found": "Ficheiro de imagem não encontrado",
+        "image_opened": "Imagem aberta no Preview",
+        "copy": "Copiar",
+        "cancel": "Cancelar",
+        "text_preview": "Visualização de Texto",
+        "developed_by": "Desenvolvido por Caio Castro",
+        "version": "Versão 1.3",
+        "linkedIn": "LinkedIn: linkedin.com/in/caiorcastro",
+        "github": "GitHub: github.com/caiorcastro/Power-Paste",
+        "language": "Idioma: Português de Portugal",
+        "settings": "Configurações",
+        "max_items_label": "Número máximo de itens no histórico:",
+        "start_at_login_label": "Iniciar com o sistema:",
+        "language_label": "Idioma:",
+        "save_button": "Guardar",
+        "settings_saved": "Configurações guardadas com sucesso!",
+        "restart_required": "Algumas alterações podem requerer reiniciar a aplicação.",
+        "settings_title": "Configurações do Power Paste"
+    },
+    "en_US": {
+        "clipboard_empty": "Empty history",
+        "clear_history": "Clear History",
+        "about": "About Power Paste",
+        "quit": "Quit",
+        "confirm_clear": "Do you really want to clear the entire history?",
+        "confirm_yes": "Yes",
+        "confirm_no": "No",
+        "history_cleared": "History cleared",
+        "notice": "Notice",
+        "error": "Error",
+        "copy_success": "Text copied to clipboard",
+        "copy_error": "Error copying text",
+        "image_open_error": "Error opening image",
+        "image_not_found": "Image file not found",
+        "image_opened": "Image opened in Preview",
+        "copy": "Copy",
+        "cancel": "Cancel",
+        "text_preview": "Text Preview",
+        "developed_by": "Developed by Caio Castro",
+        "version": "Version 1.3",
+        "linkedIn": "LinkedIn: linkedin.com/in/caiorcastro",
+        "github": "GitHub: github.com/caiorcastro/Power-Paste",
+        "language": "Language: English",
+        "settings": "Settings",
+        "max_items_label": "Maximum items in history:",
+        "start_at_login_label": "Start at login:",
+        "language_label": "Language:",
+        "save_button": "Save",
+        "settings_saved": "Settings saved successfully!",
+        "restart_required": "Some changes may require restarting the app.",
+        "settings_title": "Power Paste Settings"
+    }
+}
+
+# Idioma padrão
+CURRENT_LANGUAGE = "pt_BR"
+
+# Lê o idioma definido pelo usuário
+def load_language():
+    global CURRENT_LANGUAGE
+    if os.path.exists(LANGUAGE_FILE):
+        try:
+            with open(LANGUAGE_FILE, 'r') as f:
+                lang = f.read().strip()
+                if lang in TRANSLATIONS:
+                    CURRENT_LANGUAGE = lang
+                    return lang
+        except Exception as e:
+            print(f"Erro ao carregar arquivo de idioma: {e}")
+    return CURRENT_LANGUAGE
+
+# Carrega configurações
+def load_config():
+    global MAX_ITEMS_TO_SHOW
+    
+    # Certifique-se que o diretório existe
+    os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
+    
+    # Tenta carregar o arquivo de configuração existente
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, 'r') as f:
+                config = json.load(f)
+                # Atualiza configurações globais
+                if 'max_items' in config:
+                    MAX_ITEMS_TO_SHOW = config['max_items']
+                if 'language' in config:
+                    # Salva no arquivo de idioma para compatibilidade com versões antigas
+                    with open(LANGUAGE_FILE, 'w') as lang_file:
+                        lang_file.write(config['language'])
+                return config
+        except Exception as e:
+            print(f"Erro ao carregar configurações: {e}")
+    
+    # Se não conseguir carregar, cria um arquivo de configuração padrão
+    save_config(DEFAULT_CONFIG)
+    return DEFAULT_CONFIG
+
+# Salva configurações
+def save_config(config):
+    try:
+        os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
+        with open(CONFIG_FILE, 'w') as f:
+            json.dump(config, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Erro ao salvar configurações: {e}")
+        return False
+
+# Obtém uma string traduzida
+def _(key):
+    lang = CURRENT_LANGUAGE
+    if lang in TRANSLATIONS and key in TRANSLATIONS[lang]:
+        return TRANSLATIONS[lang][key]
+    # Fallback para inglês
+    if key in TRANSLATIONS["en_US"]:
+        return TRANSLATIONS["en_US"][key]
+    # Se não encontrar, retorna a própria chave
+    return key
+
+# Função para definir o início automático
+def set_start_at_login(enable=True):
+    try:
+        app_path = "/Applications/Power Paste.app"
+        if not os.path.exists(app_path):
+            app_path = os.path.expanduser("~/Applications/Power Paste.app")
+            if not os.path.exists(app_path):
+                return False
+        
+        if enable:
+            script = f'''
+            tell application "System Events"
+                make login item at end with properties {{path:"{app_path}", hidden:false}}
+            end tell
+            '''
+        else:
+            script = '''
+            tell application "System Events"
+                try
+                    set loginItems to the name of every login item
+                    repeat with itemName in loginItems
+                        if itemName contains "Power Paste" then
+                            delete login item itemName
+                        end if
+                    end repeat
+                end try
+            end tell
+            '''
+        
+        subprocess.run(['osascript', '-e', script], check=True)
+        return True
+    except Exception as e:
+        print(f"Erro ao configurar inicialização automática: {e}")
+        return False
+
+# Carrega o idioma na inicialização
+load_language()
+
+# Carrega configurações
+config = load_config()
 
 # Funções de manipulação da área de transferência usando APIs nativas
 def copy_text_to_clipboard_native(text):
@@ -132,75 +349,79 @@ def copy_selected_text_to_clipboard(text):
 class PowerPasteApp(rumps.App):
     def __init__(self):
         try:
+            # Carrega o idioma antes de inicializar o app
+            load_language()
+            
             super(PowerPasteApp, self).__init__(
                 name="Power Paste",
                 icon="icon.png",
-                title=None,  # Remove o título ao lado do ícone
-                quit_button=None  # Evita problemas de sessão
+                quit_button=None,  # Vamos criar nosso próprio botão de sair
+                template=True      # Ícone em preto e branco para se encaixar na barra de menus
             )
-            # Adiciona atalho de teclado manualmente
-            self.hot_key = None
-            try:
-                # Tenta registrar o atalho via AppleScript
-                cmd = "tell application \"System Events\" to key code 9 using {control down, command down}"
-                script = f'''
-                on idle
-                    tell application "System Events"
-                        set appName to name of first application process whose frontmost is true
-                        if appName is "Power Paste" then
-                            do shell script "{cmd}"
-                        end if
-                    end tell
-                    return 1
-                end idle
-                '''
-                # Registra o atalho via AppleScript
-                subprocess.Popen(['osascript', '-e', script], 
-                                stdout=subprocess.DEVNULL, 
-                                stderr=subprocess.DEVNULL)
-            except Exception as e:
-                print(f"Erro ao configurar atalho: {e}")
-                
-            # Garantir que o diretório de imagens exista
+            
+            # Configura atalho de teclado global
+            self.hotkey = "control+command+v"
+            
+            # Menu Vazio inicialmente
+            self.menu = ['']
+            
+            # Configure o menu
+            self.build_menu()
+            
+            # Garante que o diretório temporário exista
             self.ensure_temp_dir()
+            
+            # Carrega o histórico
             self.history = self.load_history()
-            self.clean_history() # Remove duplicatas e itens inválidos
             
-            # Atualizar o hash do último item conhecido ao iniciar
-            if self.history:
-                global LAST_ITEM_HASH
-                LAST_ITEM_HASH = self.history[0].get("hash")
-            
-            # Cria itens fixos do menu
-            self.menu_clear = rumps.MenuItem("Limpar Histórico", callback=self.clear_history)
-            self.menu_about = rumps.MenuItem("Sobre Power Paste", callback=self.show_about)
-            self.menu_quit = rumps.MenuItem("Sair", callback=self.quit_app)
-                
-            # Inicializa o menu
-            self.menu.clear()  # Limpa o menu padrão
-            self.rebuild_menu()
-            
-            # Registra o timer para verificação do clipboard
-            self.timer = rumps.Timer(self.check_clipboard, 1.0)
+            # Configura o timer para verificar a área de transferência
+            self.timer = rumps.Timer(self.check_clipboard, 1)
             self.timer.start()
-        except Exception as e:
-            print(f"Erro durante inicialização: {e}")
-            rumps.notification("Power Paste", "Erro", f"Falha na inicialização: {str(e)}")
             
+        except Exception as e:
+            print(f"Erro na inicialização: {e}")
+    
+    def build_menu(self):
+        # Limpa o menu atual
+        self.menu.clear()
+        
+        # Adiciona os itens do histórico
+        self.build_history_menu()
+        
+        # Adiciona os itens do menu básico
+        separator = rumps.MenuItem(title=None)  # Separador
+        clear_history = rumps.MenuItem(title=_("clear_history"))
+        settings_item = rumps.MenuItem(title=_("settings"))
+        about_item = rumps.MenuItem(title=_("about"))
+        quit_item = rumps.MenuItem(title=_("quit"))
+        
+        # Conecta os callbacks
+        clear_history.set_callback(self.clear_history)
+        settings_item.set_callback(self.show_settings)
+        about_item.set_callback(self.show_about)
+        quit_item.set_callback(self.quit_app)
+        
+        # Adiciona items ao menu
+        self.menu.add(separator)
+        self.menu.add(clear_history)
+        self.menu.add(settings_item)
+        self.menu.add(about_item)
+        self.menu.add(quit_item)
+    
     def quit_app(self, _):
-        """Fecha o aplicativo corretamente."""
+        # Limpa a pasta temporária
         try:
-            # Desativa o timer antes de sair
-            if hasattr(self, 'timer'):
-                self.timer.stop()
-            
-            # Fecha o aplicativo
-            rumps.quit_application()
-        except Exception as e:
-            print(f"Erro ao sair: {e}")
-            # Força a saída como último recurso
-            os._exit(0)
-            
+            if os.path.exists(TEMP_IMAGE_DIR):
+                for f in os.listdir(TEMP_IMAGE_DIR):
+                    try:
+                        os.remove(os.path.join(TEMP_IMAGE_DIR, f))
+                    except:
+                        pass
+        except:
+            pass
+        
+        rumps.quit_application()
+    
     def ensure_temp_dir(self):
         """Garante que o diretório temporário para imagens existe."""
         if not os.path.exists(TEMP_IMAGE_DIR):
@@ -231,8 +452,8 @@ class PowerPasteApp(rumps.App):
         except Exception as e:
             print(f"Erro ao salvar histórico: {e}")
 
-    def clean_history(self):
-        """Remove duplicatas e entradas inválidas."""
+    def clean_history(self, _=None):
+        """Limpa todo o histórico."""
         if not self.history:
             return
             
@@ -276,7 +497,7 @@ class PowerPasteApp(rumps.App):
         """Constrói a parte do menu com os itens do histórico."""
         # Verifica se há itens no histórico
         if not self.history:
-            empty_item = rumps.MenuItem("Histórico vazio")
+            empty_item = rumps.MenuItem(_("clipboard_empty"))
             empty_item.set_callback(None)  # Torna não clicável
             self.menu.add(empty_item)
         else:
@@ -319,169 +540,280 @@ class PowerPasteApp(rumps.App):
                     
                 elif item.get("type") == "image":
                     # Cria item direto para abrir no Preview
-                    title = f"{display_time} | 🖼️ Imagem"
+                    title = f"{display_time} | 🖼️ {_('image_preview') if CURRENT_LANGUAGE != 'en_US' else 'Image'}"
                     menu_item = rumps.MenuItem(title)
                     menu_item._idx = idx
                     menu_item.set_callback(self.open_image_in_preview)
                     self.menu.add(menu_item)
                 else:
                     # Tipo desconhecido
-                    title = f"{display_time} | Item desconhecido"
+                    title = f"{display_time} | {_('unknown_item')}"
                     menu_item = rumps.MenuItem(title)
                     self.menu.add(menu_item)
 
     def paste_text_item(self, sender):
-        """Manipula a seleção de um item de texto do menu."""
+        """Cola o item selecionado ou mostra janela para seleção parcial."""
+        print("[DEBUG] paste_item chamado!")
+        rumps.notification(
+            "Power Paste", 
+            _("notice"), 
+            _("callback_called")
+        )
         try:
-            idx = getattr(sender, "_idx", None)
+            idx = getattr(sender, '_idx', None)
             if idx is None or idx >= len(self.history):
-                rumps.notification("Power Paste", "Erro", "Item não encontrado")
                 return
                 
             item = self.history[idx]
-            if item.get("type") != "text":
-                rumps.notification("Power Paste", "Erro", "Item não é texto")
-                return
-                
-            text = item.get("content")
+            text = item.get("content", "")
+            
             if not text:
-                rumps.notification("Power Paste", "Erro", "Texto vazio")
                 return
                 
-            # Exibe o popup com o texto completo e opções
+            # Mostra uma janela para permitir seleção parcial do texto
             self.show_text_selection_window(text)
             
         except Exception as e:
-            print(f"Erro ao manipular item de texto: {e}")
-            rumps.notification("Power Paste", "Erro", f"Falha: {str(e)}")
-
+            print(f"Erro ao processar item: {e}")
+    
     def open_image_in_preview(self, sender):
-        """Abre a imagem no Preview."""
-        rumps.notification("Power Paste", "Debug", "Tentando abrir no Preview")
-        print("[DEBUG] open_image_in_preview chamado")
-        
+        """Abre a imagem diretamente no Preview."""
         try:
-            idx = getattr(sender, "_idx", None)
+            idx = getattr(sender, '_idx', None)
             if idx is None or idx >= len(self.history):
-                rumps.notification("Power Paste", "Erro", "Item não encontrado")
                 return
                 
             item = self.history[idx]
-            if item.get("type") != "image":
-                rumps.notification("Power Paste", "Erro", "Item não é uma imagem")
+            content = item.get("content", "")
+            
+            if not content:
                 return
                 
-            content = item.get("content")
-            if not content or not os.path.exists(content):
-                rumps.notification("Power Paste", "Erro", "Arquivo de imagem não encontrado")
+            # Verifica se o arquivo existe
+            if not os.path.exists(content):
+                rumps.notification(
+                    "Power Paste", 
+                    _("error"), 
+                    _("image_not_found")
+                )
                 return
                 
-            # Caminho absoluto da imagem
-            abs_path = os.path.abspath(content)
-            print(f"[DEBUG] Caminho da imagem: {abs_path}")
-            
-            # Executa o comando de forma mais direta e robusta
-            result = subprocess.run(['open', '-a', 'Preview', abs_path], 
-                               capture_output=True, 
-                               text=True)
-            
-            if result.returncode == 0:
-                rumps.notification("Power Paste", "Sucesso", "Imagem aberta no Preview")
+            # Verifica se o Preview está instalado
+            if not os.path.exists("/Applications/Preview.app"):
+                # Tenta abrir com o visualizador padrão
+                subprocess.run(['open', content], check=False)
             else:
-                error = result.stderr.strip() if result.stderr else "Erro desconhecido"
-                rumps.notification("Power Paste", "Erro", f"Falha ao abrir: {error}")
-                print(f"[DEBUG] Erro: {error}")
+                # Usa caminho absoluto para o arquivo
+                subprocess.run(['open', '-a', 'Preview', os.path.abspath(content)], check=False)
                 
-        except Exception as e:
-            print(f"[DEBUG] Exceção: {str(e)}")
-            rumps.notification("Power Paste", "Erro", f"Falha: {str(e)}")
-
-    def show_text_selection_window(self, text):
-        """
-        Exibe uma janela de seleção de texto usando APIs nativas do macOS
-        """
-        # Salva o texto temporariamente em um arquivo
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        temp_file = os.path.join(tempfile.gettempdir(), f"power_paste_text_{timestamp}.txt")
-        
-        try:
-            with open(temp_file, 'w', encoding='utf-8') as f:
-                f.write(text)
+            rumps.notification(
+                "Power Paste", 
+                _("notice"), 
+                _("image_opened")
+            )
             
-            # Abre o arquivo no TextEdit (editor de texto nativo do macOS)
-            subprocess.run(['open', '-a', 'TextEdit', temp_file], check=False)
+        except Exception as e:
+            rumps.notification(
+                "Power Paste", 
+                _("error"), 
+                f"{_('image_open_error')}: {str(e)}"
+            )
+    
+    def show_text_selection_window(self, text):
+        """Mostra uma janela para selecionar parte do texto."""
+        try:
+            # Cria uma janela simples para mostrar o texto com pyobjc
+            script = f'''
+            tell application "System Events"
+                set theText to "{text.replace('"', '\\"').replace('\n', '\\n')}"
+                set theResult to display dialog theText buttons {{"{_('cancel')}", "{_('copy')}"}} default button 2 with title "{_('text_preview')}"
+                set theButton to button returned of theResult
+                
+                if theButton is "{_('copy')}" then
+                    return "copy_all"
+                else
+                    return "cancel"
+                end if
+            end tell
+            '''
+            
+            result = subprocess.run(['osascript', '-e', script], 
+                                   capture_output=True, text=True)
+            
+            action = result.stdout.strip()
+            
+            if action == "copy_all":
+                # Copia o texto selecionado
+                if copy_text_to_clipboard_native(text):
+                    rumps.notification(
+                        "Power Paste", 
+                        _("notice"), 
+                        _("copy_success")
+                    )
+                else:
+                    rumps.notification(
+                        "Power Paste", 
+                        _("error"), 
+                        _("copy_error")
+                    )
+            
+        except Exception as e:
+            print(f"Erro ao mostrar janela de seleção: {e}")
+    
+    def clear_history(self, _=None):
+        """Limpa todo o histórico."""
+        if not self.history:
+            return
+            
+        # Confirmação antes de limpar
+        script = f'''
+        tell application "System Events"
+            display dialog "{_('confirm_clear')}" buttons {{"{_('confirm_no')}", "{_('confirm_yes')}"}} default button 1 with icon caution
+            set theButton to button returned of result
+            if theButton is "{_('confirm_yes')}" then
+                return "yes"
+            else
+                return "no"
+            end if
+        end tell
+        '''
+        
+        result = subprocess.run(['osascript', '-e', script], 
+                               capture_output=True, text=True)
+        
+        if result.stdout.strip() == "yes":
+            # Limpa o histórico
+            self.history = []
+            self.save_history()
+            
+            # Limpa arquivos temporários de imagens
+            for file in os.listdir(TEMP_IMAGE_DIR):
+                try:
+                    os.remove(os.path.join(TEMP_IMAGE_DIR, file))
+                except:
+                    pass
+            
+            self.rebuild_menu()
             
             # Notifica o usuário
             rumps.notification(
                 "Power Paste", 
-                "Texto disponível para edição", 
-                "Selecione e copie as partes desejadas no TextEdit"
+                _("notice"), 
+                _("history_cleared")
             )
-        except Exception as e:
-            print(f"Erro ao abrir texto para edição: {e}")
             
-            # Fallback: copia o texto diretamente
-            if copy_text_to_clipboard_native(text):
-                rumps.notification(
-                    "Power Paste", 
-                    "Texto copiado", 
-                    "Use Cmd+V para colar"
-                )
-
-    def clear_history(self, _=None):
-        """Limpa o histórico de itens."""
-        if rumps.alert(
-            "Limpar Histórico", 
-            "Deseja realmente limpar todo o histórico?", 
-            "Sim", "Não"
-        ) == 1:  # 1 = Sim, 0 = Não na API do rumps
-            try:
-                # Remove arquivos de imagem
-                for item in self.history:
-                    if item.get("type") == "image":
-                        path = item.get("content", "")
-                        if path and os.path.exists(path):
-                            try:
-                                os.remove(path)
-                            except:
-                                pass
-                
-                # Limpa o histórico
-                self.history = []
-                self.save_history()
-                
-                # Reseta o hash
-                global LAST_ITEM_HASH
-                LAST_ITEM_HASH = None
-                
-                # Atualiza o menu
-                self.rebuild_menu()
-                
-                # Notifica o usuário
-                rumps.notification(
-                    "Power Paste", 
-                    "Histórico limpo", 
-                    "Todos os itens foram removidos"
-                )
-            except Exception as e:
-                print(f"Erro ao limpar histórico: {e}")
-                rumps.notification(
-                    "Power Paste", 
-                    "Erro", 
-                    f"Falha ao limpar histórico: {str(e)}"
-                )
-
     def show_about(self, _):
-        """Mostra informações sobre o aplicativo."""
-        rumps.alert(
-            "Power Paste", 
-            "Power Paste 1.2\n\n"
-            "Um gerenciador de área de transferência eficiente e prático.\n\n"
-            "Desenvolvido por Caio Castro\n"
-            "LinkedIn: linkedin.com/in/caiorcastro\n\n"
-            "Atalho: Ctrl+Cmd+V"
+        about_window = rumps.Window(
+            message=f"{_('developed_by')}\n{_('version')}\n\n{_('linkedIn')}\n{_('github')}\n\n{_('language')}",
+            title=_("about"),
+            ok="OK"
         )
-
+        about_window.run()
+    
+    def show_settings(self, _):
+        # Carrega configurações atuais
+        config = load_config()
+        
+        settings_window = rumps.Window(
+            message=f"{_('max_items_label')} {config.get('max_items', 25)}\n"
+                   f"{_('start_at_login_label')} {'✓' if config.get('start_at_login', True) else '✗'}\n"
+                   f"{_('language_label')} {_('language').split(':')[1].strip()}",
+            title=_("settings_title"),
+            dimensions=(300, 200)
+        )
+        
+        # Dropdown de idiomas
+        language_menu = [
+            "🇧🇷 Português do Brasil", 
+            "🇵🇹 Português de Portugal", 
+            "🇺🇸 English"
+        ]
+        settings_window.add_buttons("Cancel")
+        settings_window.add_buttons(_("save_button"))
+        
+        # Dropdown para número máximo de itens
+        max_items_options = ["10", "15", "20", "25", "30", "50", "100"]
+        current_max = str(config.get('max_items', 25))
+        if current_max not in max_items_options:
+            max_items_options.append(current_max)
+            max_items_options.sort(key=lambda x: int(x))
+        
+        # Índice da língua atual
+        current_lang = config.get('language', 'pt_BR')
+        lang_index = 0
+        if current_lang == "pt_PT":
+            lang_index = 1
+        elif current_lang == "en_US":
+            lang_index = 2
+        
+        # Adiciona campos ao formulário
+        settings_window.add_dropdown(max_items_options, max_items_options.index(current_max) if current_max in max_items_options else 3)
+        settings_window.add_dropdown(language_menu, lang_index)
+        settings_window.add_checkbox("Iniciar com o sistema", config.get('start_at_login', True))
+        
+        # Processa o resultado
+        response = settings_window.run()
+        if response.clicked == 1:  # Botão "Salvar"
+            try:
+                # Mapeia a resposta do dropdown para o código de idioma
+                selected_lang_index = response.dropdown[1]
+                lang_map = {
+                    0: "pt_BR",
+                    1: "pt_PT",
+                    2: "en_US"
+                }
+                selected_lang = lang_map.get(selected_lang_index, "pt_BR")
+                
+                # Número máximo de itens
+                selected_max_items = int(max_items_options[response.dropdown[0]])
+                
+                # Atualiza configurações
+                new_config = {
+                    'max_items': selected_max_items,
+                    'start_at_login': response.checkbox,
+                    'language': selected_lang
+                }
+                
+                # Salva configurações
+                if save_config(new_config):
+                    # Atualiza idioma imediatamente
+                    global CURRENT_LANGUAGE, MAX_ITEMS_TO_SHOW
+                    CURRENT_LANGUAGE = selected_lang
+                    MAX_ITEMS_TO_SHOW = selected_max_items
+                    
+                    # Salva o idioma em um arquivo separado para compatibilidade
+                    os.makedirs(os.path.dirname(LANGUAGE_FILE), exist_ok=True)
+                    with open(LANGUAGE_FILE, 'w') as f:
+                        f.write(selected_lang)
+                    
+                    # Configura início automático
+                    set_start_at_login(response.checkbox)
+                    
+                    # Aviso de sucesso
+                    success_window = rumps.Window(
+                        message=f"{_('settings_saved')}\n{_('restart_required')}",
+                        title=_("notice"),
+                        ok="OK"
+                    )
+                    success_window.run()
+                    
+                    # Reconstrói o menu
+                    self.build_menu()
+                else:
+                    error_window = rumps.Window(
+                        message="Erro ao salvar configurações",
+                        title=_("error"),
+                        ok="OK"
+                    )
+                    error_window.run()
+            except Exception as e:
+                error_window = rumps.Window(
+                    message=f"Erro: {str(e)}",
+                    title=_("error"),
+                    ok="OK"
+                )
+                error_window.run()
+    
     def check_clipboard(self, _):
         """Verifica a área de transferência por novos conteúdos."""
         global LAST_ITEM_HASH
