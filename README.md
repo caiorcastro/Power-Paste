@@ -34,53 +34,38 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 
 ## Instalação
 
-### Método 1: Instalador DMG Automático (Recomendado)
+### Instalador Simples (Recomendado)
 
-1. Baixe o arquivo [Power Paste Installer (Final).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Final.dmg)
+1. Baixe o arquivo [Power Paste.dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.dmg)
 2. Monte a imagem DMG clicando duas vezes no arquivo baixado
 3. Clique duas vezes no arquivo "install.command"
-4. Escolha entre instalação para usuário único (sem senha) ou para todo o sistema (requer senha)
-5. O aplicativo será instalado, iniciado e configurado automaticamente
+4. Pronto! A instalação é totalmente automática
 
-O novo instalador automático:
-- Detecta e remove versões anteriores automaticamente
-- Instala e inicia o aplicativo sem perguntas desnecessárias
-- Configura o app para iniciar automaticamente no login
-- Mostra claramente onde encontrar o ícone na barra de menus
-- Funciona mesmo para usuários sem privilégios administrativos
-- Usa o ícone bonito do Power Paste nos diálogos
+O instalador faz tudo para você:
+- Instala o app na pasta Applications do seu usuário 
+- Remove versões antigas que possam estar causando conflitos
+- Inicia o Power Paste automaticamente
+- Configura para iniciar com o sistema
+- Não precisa de senha de administrador
 
-### Método 2: Instalação Manual
+Após a instalação, o ícone do Power Paste aparecerá na barra de menus (canto superior direito).
 
-Se preferir, você também pode:
+### Instalação Manual
+
+Se preferir, você pode simplesmente:
 1. Baixar o arquivo DMG
 2. Montar a imagem DMG clicando duas vezes no arquivo baixado
-3. Arrastar o ícone do Power Paste para a pasta de Aplicativos do seu usuário (~USERNAME/Applications)
+3. Arrastar o ícone do Power Paste para a pasta Applications do seu usuário
 
-### Método 3: Compilação manual
+## Como Usar
 
-```bash
-# Clone o repositório
-git clone https://github.com/caiorcastro/Power-Paste.git
-cd Power-Paste
+1. Após copiar qualquer texto ou imagem, o Power Paste o salva automaticamente
+2. Clique no ícone do Power Paste na barra de menus para ver o histórico
+3. Selecione qualquer item para:
+   - Textos: Visualizar/editar e depois copiar
+   - Imagens: Abrir diretamente no Preview
 
-# Instale as dependências
-pip install -r requirements.txt
-
-# Construa o aplicativo
-python setup.py py2app
-```
-
-## Uso
-
-1. O ícone do Power Paste aparecerá na barra de menus do macOS
-2. Clique no ícone para ver o histórico de cópias
-3. Selecione um item para copiá-lo ou visualizá-lo:
-   - Itens de texto: Abrem uma janela de pré-visualização
-   - Imagens: Abrem diretamente no Preview
-
-## Atalhos
-
+## Atalhos de Teclado
 - `Ctrl+Cmd+V`: Abre o menu do Power Paste
 
 ## Como Contribuir
