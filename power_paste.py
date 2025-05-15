@@ -134,7 +134,9 @@ class PowerPasteApp(rumps.App):
         super(PowerPasteApp, self).__init__(
             name="Power Paste",
             icon="icon.png",
-            title=None  # Remove o título ao lado do ícone
+            title=None,  # Remove o título ao lado do ícone
+            key='v',  # Tecla V 
+            modifier=['ctrl', 'command']  # Modificadores Ctrl+Cmd
         )
         # Garantir que o diretório de imagens exista
         self.ensure_temp_dir()
