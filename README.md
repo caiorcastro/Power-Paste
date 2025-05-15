@@ -34,20 +34,24 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 
 ## Instalação
 
-### Método 1: Instalador DMG (Recomendado)
+### Método 1: Instalador DMG com Interface Amigável (Recomendado)
 
-1. Baixe o arquivo [Power Paste Installer.dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.dmg)
+1. Baixe o arquivo [Power Paste Installer (Amigável).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Amigavel.dmg)
 2. Monte a imagem DMG clicando duas vezes no arquivo baixado
-3. Arraste o aplicativo "Power Paste" para a pasta Aplicativos
-   
-   OU
-   
-   Execute o script "install.command" para instalação automática com:
-   - Configuração de inicialização automática com o sistema
-   - Remoção de versões anteriores
-   - Inicialização imediata do aplicativo
+3. Clique duas vezes no arquivo "install.command"
+4. Siga as instruções amigáveis na tela de instalação:
+   - O assistente perguntará se você deseja iniciar o app automaticamente com o sistema
+   - Também perguntará se deseja iniciar o app imediatamente após a instalação
+   - Não é necessário conhecimento técnico!
 
-### Método 2: Compilação manual
+### Método 2: Instalação Manual
+
+Você também pode simplesmente:
+1. Baixar o arquivo DMG
+2. Montar a imagem DMG clicando duas vezes no arquivo baixado
+3. Arrastar o ícone do Power Paste para a pasta de Aplicativos
+
+### Método 3: Compilação manual
 
 ```bash
 # Clone o repositório
