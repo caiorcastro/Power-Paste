@@ -131,35 +131,76 @@ def copy_selected_text_to_clipboard(text):
 
 class PowerPasteApp(rumps.App):
     def __init__(self):
-        super(PowerPasteApp, self).__init__(
-            name="Power Paste",
-            icon="icon.png",
-            title=None,  # Remove o título ao lado do ícone
-            key='v',  # Tecla V 
-            modifier=['ctrl', 'command']  # Modificadores Ctrl+Cmd
-        )
-        # Garantir que o diretório de imagens exista
-        self.ensure_temp_dir()
-        self.history = self.load_history()
-        self.clean_history() # Remove duplicatas e itens inválidos
-        
-        # Atualizar o hash do último item conhecido ao iniciar
-        if self.history:
-            global LAST_ITEM_HASH
-            LAST_ITEM_HASH = self.history[0].get("hash")
-        
-        # Cria itens fixos do menu
-        self.menu_clear = rumps.MenuItem("Limpar Histórico", callback=self.clear_history)
-        self.menu_about = rumps.MenuItem("Sobre Power Paste", callback=self.show_about)
+        try:
+            super(PowerPasteApp, self).__init__(
+                name="Power Paste",
+                icon="icon.png",
+                title=None,  # Remove o título ao lado do ícone
+                quit_button=None  # Evita problemas de sessão
+            )
+            # Adiciona atalho de teclado manualmente
+            self.hot_key = None
+            try:
+                # Tenta registrar o atalho via AppleScript
+                cmd = "tell application \"System Events\" to key code 9 using {control down, command down}"
+                script = f'''
+                on idle
+                    tell application "System Events"
+                        set appName to name of first application process whose frontmost is true
+                        if appName is "Power Paste" then
+                            do shell script "{cmd}"
+                        end if
+                    end tell
+                    return 1
+                end idle
+                '''
+                # Registra o atalho via AppleScript
+                subprocess.Popen(['osascript', '-e', script], 
+                                stdout=subprocess.DEVNULL, 
+                                stderr=subprocess.DEVNULL)
+            except Exception as e:
+                print(f"Erro ao configurar atalho: {e}")
+                
+            # Garantir que o diretório de imagens exista
+            self.ensure_temp_dir()
+            self.history = self.load_history()
+            self.clean_history() # Remove duplicatas e itens inválidos
             
-        # Inicializa o menu
-        self.menu.clear()  # Limpa o menu padrão
-        self.rebuild_menu()
-        
-        # Registra o timer para verificação do clipboard
-        self.timer = rumps.Timer(self.check_clipboard, 1.0)
-        self.timer.start()
-
+            # Atualizar o hash do último item conhecido ao iniciar
+            if self.history:
+                global LAST_ITEM_HASH
+                LAST_ITEM_HASH = self.history[0].get("hash")
+            
+            # Cria itens fixos do menu
+            self.menu_clear = rumps.MenuItem("Limpar Histórico", callback=self.clear_history)
+            self.menu_about = rumps.MenuItem("Sobre Power Paste", callback=self.show_about)
+            self.menu_quit = rumps.MenuItem("Sair", callback=self.quit_app)
+                
+            # Inicializa o menu
+            self.menu.clear()  # Limpa o menu padrão
+            self.rebuild_menu()
+            
+            # Registra o timer para verificação do clipboard
+            self.timer = rumps.Timer(self.check_clipboard, 1.0)
+            self.timer.start()
+        except Exception as e:
+            print(f"Erro durante inicialização: {e}")
+            rumps.notification("Power Paste", "Erro", f"Falha na inicialização: {str(e)}")
+            
+    def quit_app(self, _):
+        """Fecha o aplicativo corretamente."""
+        try:
+            # Desativa o timer antes de sair
+            if hasattr(self, 'timer'):
+                self.timer.stop()
+            
+            # Fecha o aplicativo
+            rumps.quit_application()
+        except Exception as e:
+            print(f"Erro ao sair: {e}")
+            # Força a saída como último recurso
+            os._exit(0)
+            
     def ensure_temp_dir(self):
         """Garante que o diretório temporário para imagens existe."""
         if not os.path.exists(TEMP_IMAGE_DIR):
@@ -229,6 +270,7 @@ class PowerPasteApp(rumps.App):
         self.menu.add(None)  # Separador
         self.menu.add(self.menu_clear)
         self.menu.add(self.menu_about)
+        self.menu.add(self.menu_quit)
 
     def build_history_menu(self):
         """Constrói a parte do menu com os itens do histórico."""
