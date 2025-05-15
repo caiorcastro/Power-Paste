@@ -34,35 +34,30 @@ Power Paste é um gerenciador de área de transferência para macOS que armazena
 
 ## Instalação
 
-### Método 1: Instalador DMG sem necessidade de senha de administrador
+### Método 1: Instalador DMG Automático (Recomendado)
 
-1. Baixe o arquivo [Power Paste Installer (Sem Admin).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Sem.Admin.dmg)
+1. Baixe o arquivo [Power Paste Installer (Final).dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.Installer.Final.dmg)
 2. Monte a imagem DMG clicando duas vezes no arquivo baixado
 3. Clique duas vezes no arquivo "install.command"
-4. Quando perguntado sobre o local de instalação, escolha **"Pasta de Usuário"**
-5. Siga as instruções amigáveis na tela
-6. Não é necessário senha de administrador!
+4. Escolha entre instalação para usuário único (sem senha) ou para todo o sistema (requer senha)
+5. O aplicativo será instalado, iniciado e configurado automaticamente
 
-O instalador permite que você:
-- Instale na pasta Applications do seu usuário pessoal
-- Configure para iniciar automaticamente com o sistema
-- Inicie o aplicativo imediatamente
+O novo instalador automático:
+- Detecta e remove versões anteriores automaticamente
+- Instala e inicia o aplicativo sem perguntas desnecessárias
+- Configura o app para iniciar automaticamente no login
+- Mostra claramente onde encontrar o ícone na barra de menus
+- Funciona mesmo para usuários sem privilégios administrativos
+- Usa o ícone bonito do Power Paste nos diálogos
 
-### Método 2: Instalador DMG para todo o sistema (requer senha)
+### Método 2: Instalação Manual
 
-Se preferir instalar para todos os usuários do computador:
-1. Baixe o instalador mencionado acima
-2. Escolha "Sistema (requer senha)" quando perguntado sobre o local de instalação
-3. Você precisará fornecer uma senha de administrador quando solicitado
-
-### Método 3: Instalação Manual
-
-Você também pode simplesmente:
+Se preferir, você também pode:
 1. Baixar o arquivo DMG
 2. Montar a imagem DMG clicando duas vezes no arquivo baixado
 3. Arrastar o ícone do Power Paste para a pasta de Aplicativos do seu usuário (~USERNAME/Applications)
 
-### Método 4: Compilação manual
+### Método 3: Compilação manual
 
 ```bash
 # Clone o repositório
