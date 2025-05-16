@@ -16,109 +16,133 @@
   <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/Version-1.3-orange?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/Languages-PT--BR%20|%20PT--PT%20|%20EN-yellow?style=flat-square" alt="Languages">
+  <img src="https://img.shields.io/badge/Languages-PT--Normal%20|%20PT--Arcaico%20|%20EN-yellow?style=flat-square" alt="Languages">
 </p>
 
-## Sobre o Projeto
+## 📋 Sobre o Projeto
 
-Power Paste é um gerenciador de área de transferência para macOS que armazena automaticamente seu histórico de cópias, incluindo textos e imagens.
+**Power Paste** é um gerenciador de área de transferência leve e elegante para macOS que armazena automaticamente seu histórico de cópias, incluindo textos e imagens. Tudo isso com uma interface minimalista que se integra perfeitamente à barra de menus do seu Mac.
 
-## Recursos
+## ✨ Recursos
 
-- 📋 Histórico de cópias de texto e imagens
-- 🔄 Interface simples na barra de menus
+- 📋 Histórico de cópias de texto e imagens (até 25 itens configuráveis)
+- 🔄 Interface simples e discreta na barra de menus
 - 🖼️ Visualização de imagens diretamente no Preview
 - 🚀 Atalho de teclado para acesso rápido (Ctrl+Cmd+V)
 - 🔍 Visualização e edição de texto antes de colar
 - 🌙 Integração nativa com macOS
-- 🔐 Armazenamento local de dados (não envia dados para a nuvem)
-- 🌐 Suporte a três idiomas: Português do Brasil (🇧🇷), Português de Portugal (🇵🇹) e Inglês (🇺🇸)
-- ⚙️ Configurações personalizáveis (idioma, tamanho do histórico, inicialização)
+- 🔐 Armazenamento local (privacidade garantida - seus dados nunca saem do seu Mac)
+- 🌐 Suporte a três idiomas: Português Normal (Brasil) (🇧🇷), Português Arcaico (Guiana Brasileira/Portugal) (🇵🇹) e Inglês (🇺🇸)
+- ⚙️ Menu de configurações completo para personalizar o aplicativo
+- 🚀 Leve e eficiente - consome poucos recursos do sistema
 
-## Instalação
+## 🚀 Instalação
 
-### Instalador Simples (Recomendado)
+### Usando o Script Fornecido (Recomendado)
 
-1. Baixe o arquivo [Power Paste.dmg](https://github.com/caiorcastro/Power-Paste/releases/latest/download/Power.Paste.dmg)
-2. Monte a imagem DMG clicando duas vezes no arquivo baixado
-3. Clique duas vezes no arquivo "install.command"
-4. Escolha seu idioma preferido: 
-   - 🇧🇷 Português do Brasil
-   - 🇵🇹 Português de Portugal
-   - 🇺🇸 English (Inglês)
-5. Pronto! A instalação é totalmente automática
+O método mais simples é usar o script `rebuild_app.sh` incluído:
 
-O instalador faz tudo para você:
-- Permite escolher seu idioma preferido
-- Instala o app na pasta Applications do seu usuário 
-- Remove versões antigas que possam estar causando conflitos
-- Inicia o Power Paste automaticamente
-- Configura para iniciar com o sistema
-- Não precisa de senha de administrador
+```bash
+# Torne o script executável (apenas uma vez)
+chmod +x rebuild_app.sh
 
-Após a instalação, o ícone do Power Paste aparecerá na barra de menus (canto superior direito).
+# Com ambiente virtual (recomendado para desenvolvedores)
+./rebuild_app.sh --venv
+
+# Sem ambiente virtual (instalação rápida)
+./rebuild_app.sh
+```
+
+Este script irá:
+1. Opcionalmente criar um ambiente virtual Python (com a flag --venv)
+2. Limpar construções anteriores
+3. Converter o ícone para o formato ICNS (melhor qualidade na barra de menus)
+4. Construir o aplicativo usando py2app
+5. Instalar na pasta Applications do seu usuário
+6. Configurar a inicialização automática
 
 ### Instalação Manual
 
-Se preferir, você pode simplesmente:
-1. Baixar o arquivo DMG
-2. Montar a imagem DMG clicando duas vezes no arquivo baixado
-3. Arrastar o ícone do Power Paste para a pasta Applications do seu usuário
+Se preferir fazer manualmente:
 
-## Como Usar
-
-1. Após copiar qualquer texto ou imagem, o Power Paste o salva automaticamente
-2. Clique no ícone do Power Paste na barra de menus para ver o histórico
-3. Selecione qualquer item para:
-   - Textos: Visualizar/editar e depois copiar
-   - Imagens: Abrir diretamente no Preview
-4. Acesse as configurações através do menu para personalizar o aplicativo
-
-## Configurações
-
-O Power Paste oferece uma tela de configurações onde você pode:
-
-- 🌐 Alterar o idioma do aplicativo (sem precisar reinstalar)
-- 📊 Ajustar o número máximo de itens salvos no histórico
-- 🔄 Ativar ou desativar a inicialização automática com o sistema
-
-Para acessar as configurações, clique no ícone do Power Paste na barra de menus e selecione "Configurações".
-
-## Atalhos de Teclado
-- `Ctrl+Cmd+V`: Abre o menu do Power Paste
-
-## Como Contribuir
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar um Pull Request.
-
-## Licença
-
-Este projeto está licenciado sob a [Licença MIT](LICENSE).
-
-## Contato
-
-Caio Castro - [LinkedIn](https://www.linkedin.com/in/caiorcastro/)
-
-## ✨ Funcionalidades
-
-- 📋 Salva automaticamente as últimas 25 cópias (configurável)
-- 🖼️ Suporte para imagens com visualização no Preview
-- 🎨 Suporta formatação rica (RTF)
-- 🖥️ Interface minimalista na barra de menus
-- 🔄 Inicia automaticamente com o sistema
-- ⌨️ Atalho de teclado (Ctrl+Cmd+V) para acesso rápido
-- 📝 Suporte a múltiplos itens na área de transferência
-- ⚙️ Configurações personalizáveis
-
-## 🚀 Instalação para Desenvolvedores
-
-1. Clone o repositório:
+1. (Opcional) Crie um ambiente virtual:
 ```bash
-git clone https://github.com/caiorcastro/Power-Paste.git
-cd Power-Paste
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-2. Crie e ative o ambiente virtual:
+2. Instale as dependências:
+```bash
+pip install -r requirements.txt
+pip install py2app
+```
+
+3. Construa o aplicativo:
+```bash
+python3 setup.py py2app
+```
+
+4. Copie o aplicativo para a pasta Applications:
+```bash
+cp -R dist/Power\ Paste.app ~/Applications/
+```
+
+## 🖱️ Como Usar
+
+1. Após a instalação, o Power Paste aparecerá como um ícone na barra de menus do macOS
+2. O aplicativo captura automaticamente tudo que você copia (texto e imagens)
+3. Para acessar seu histórico, clique no ícone na barra de menus
+4. Para textos:
+   - Clique em um item para ver uma prévia e copiá-lo
+   - O texto será copiado para a área de transferência, pronto para colar em qualquer aplicativo
+5. Para imagens:
+   - Clique em um item de imagem para abri-lo no Preview
+
+### Atalho de Teclado
+- `Ctrl+Cmd+V`: Acessa rapidamente o menu do Power Paste de qualquer aplicativo
+
+## ⚙️ Configurações
+
+O Power Paste oferece um menu completo de configurações com as seguintes opções:
+
+- 🌐 **Idioma**: Escolha entre Português Normal (Brasil), Português Arcaico (Guiana Brasileira/Portugal) ou Inglês
+- 🔄 **Inicialização com o Sistema**: Configure se o aplicativo deve iniciar automaticamente com o macOS
+- 📊 **Número Máximo de Itens**: Defina quantos itens deseja manter no histórico (10, 25, 50 ou 100)
+
+Para acessar as configurações:
+1. Clique no ícone do Power Paste na barra de menus
+2. Selecione "Configurações" no menu
+
+As alterações nas configurações são aplicadas imediatamente. Se você mudar o idioma, o aplicativo oferecerá a opção de reiniciar para aplicar a mudança.
+
+O Power Paste armazena suas configurações em arquivos locais:
+
+- Histórico: `~/.power_paste_history.json`
+- Configurações: `~/.power_paste/config.json`
+- Idioma: `~/.power_paste/language`
+
+## 🧹 Limpeza e Desinstalação
+
+Para desinstalar o Power Paste completamente:
+
+```bash
+# Encerre o aplicativo
+killall "Power Paste"
+
+# Remova o aplicativo
+rm -rf ~/Applications/Power\ Paste.app
+
+# Remova os arquivos de dados (opcional)
+rm -f ~/.power_paste_history.json
+rm -rf ~/.power_paste
+```
+
+## 👨‍💻 Desenvolvimento
+
+Para desenvolver ou modificar o Power Paste:
+
+1. Clone o repositório ou faça um fork
+2. Crie um ambiente virtual (recomendado):
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
@@ -134,68 +158,27 @@ pip install -r requirements.txt
 python3 power_paste.py
 ```
 
-## 🔨 Criando o DMG para Distribuição
-
-Para gerar o arquivo DMG para distribuição, use o script `create_dmg.py`:
-
+5. Para construir o aplicativo após suas modificações:
 ```bash
-# Ative o ambiente virtual
-source .venv/bin/activate
+# Usando ambiente virtual
+./rebuild_app.sh --venv
 
-# Execute o script de criação de DMG
-./create_dmg.py
+# Sem ambiente virtual
+./rebuild_app.sh
 ```
 
-Isso irá:
-1. Limpar compilações anteriores
-2. Compilar o aplicativo usando py2app
-3. Criar uma estrutura de diretórios para o DMG
-4. Gerar um único instalador simplificado
-5. Criar o arquivo DMG final chamado "Power Paste.dmg"
+## 📄 Licença
 
-O DMG contém apenas um único instalador, facilitando a distribuição e instalação.
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
 
-## 🗑️ Desinstalação
+## 📞 Contato
 
-1. Pare o aplicativo:
-```bash
-launchctl unload ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
-```
-
-2. Remova os arquivos:
-```bash
-rm -rf ~/Applications/PowerPaste
-rm -rf ~/Applications/Power\ Paste.app
-rm ~/Library/LaunchAgents/com.caiorcastro.powerpaste.plist
-rm -rf ~/.power_paste
-```
-
-## 👨‍💻 Desenvolvimento
-
-Para desenvolver ou modificar o aplicativo:
-
-1. Clone o repositório
-2. Crie e ative o ambiente virtual
-3. Instale as dependências de desenvolvimento:
-```bash
-pip install -r requirements.txt
-```
-
-4. Execute o aplicativo em modo de desenvolvimento:
-```bash
-python3 power_paste.py
-```
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
+Caio Castro - [LinkedIn](https://www.linkedin.com/in/caiorcastro/)
 
 ---
 
 <p align="center">
-  Desenvolvido por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a>
+  <i>Um aplicativo elegante para gerenciar seu histórico de área de transferência.</i><br>
+  Desenvolvido com ❤️ por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a><br>
+  <small>Maio de 2025</small>
 </p> 
