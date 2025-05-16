@@ -1,12 +1,59 @@
-# Ambiente virtual
-.venv/
-venv/
-ENV/
-
-# Arquivos de cache Python
+# Arquivos compilados Python
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Distribuição / empacotamento
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ambientes virtuais
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Arquivos específicos de IDE/editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Arquivos específicos do macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Arquivos específicos deste projeto
+*.dmg
+icns.iconset/
+icon.icns
+*~original
+
+# Arquivos de log e banco de dados
+*.log
+*.sqlite3
+
+# Arquivos de cache Python
 .pytest_cache/
 .coverage
 htmlcov/
@@ -26,17 +73,11 @@ Icon
 ~/.power_paste_temp_images/
 
 # Arquivos de distribuição / packaging
-dist/
-build/
-*.egg-info/
-
-# Arquivos temporários
 *.tmp
 *.bak
-*.swp
 
 # Arquivos do IDE
 .idea/
 .vscode/
 *.sublime-project
-*.sublime-workspace 
+*.sublime-workspace power_paste_original.py

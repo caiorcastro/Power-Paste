@@ -1,11 +1,11 @@
 from setuptools import setup
 
 APP = ["power_paste.py"]
-DATA_FILES = ["icon.png"]
+DATA_FILES = ["icon.png", "icon.icns"]
 OPTIONS = {
     "packages": ["rumps", "PIL", "pyperclip"],
     "includes": ["rumps", "pyperclip", "PIL", "Foundation", "AppKit", "objc"],
-    "iconfile": "icon.png",
+    "iconfile": "icon.icns",
     "plist": {
         "CFBundleName": "Power Paste",
         "CFBundleDisplayName": "Power Paste",

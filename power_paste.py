@@ -60,7 +60,15 @@ TRANSLATIONS = {
         "save_button": "Salvar",
         "settings_saved": "Configurações salvas com sucesso!",
         "restart_required": "Algumas mudanças podem exigir reiniciar o aplicativo.",
-        "settings_title": "Configurações do Power Paste"
+        "settings_title": "Configurações do Power Paste",
+        "settings_message": "Configure as opções do Power Paste",
+        "language_pt_BR": "🇧🇷 Português do Brasil",
+        "language_pt_PT": "🇵🇹 Português de Portugal",
+        "language_en_US": "🇺🇸 Inglês (English)",
+        "start_at_login_select": "Iniciar o Power Paste automaticamente?",
+        "max_items_select": "Escolha quantos itens manter no histórico:",
+        "yes": "Sim",
+        "no": "Não"
     },
     "pt_PT": {
         "clipboard_empty": "Histórico vazio",
@@ -93,7 +101,15 @@ TRANSLATIONS = {
         "save_button": "Guardar",
         "settings_saved": "Configurações guardadas com sucesso!",
         "restart_required": "Algumas alterações podem requerer reiniciar a aplicação.",
-        "settings_title": "Configurações do Power Paste"
+        "settings_title": "Configurações do Power Paste",
+        "settings_message": "Configure as opções do Power Paste",
+        "language_pt_BR": "🇧🇷 Português do Brasil",
+        "language_pt_PT": "🇵🇹 Português de Portugal",
+        "language_en_US": "🇺🇸 Inglês (English)",
+        "start_at_login_select": "Iniciar o Power Paste automaticamente?",
+        "max_items_select": "Escolha quantos itens manter no histórico:",
+        "yes": "Sim",
+        "no": "Não"
     },
     "en_US": {
         "clipboard_empty": "Empty history",
@@ -126,7 +142,15 @@ TRANSLATIONS = {
         "save_button": "Save",
         "settings_saved": "Settings saved successfully!",
         "restart_required": "Some changes may require restarting the app.",
-        "settings_title": "Power Paste Settings"
+        "settings_title": "Power Paste Settings",
+        "settings_message": "Configure Power Paste options",
+        "language_pt_BR": "🇧🇷 Brazilian Portuguese",
+        "language_pt_PT": "🇵🇹 Portuguese",
+        "language_en_US": "🇺🇸 English",
+        "start_at_login_select": "Start Power Paste automatically?",
+        "max_items_select": "Choose how many items to keep in history:",
+        "yes": "Yes",
+        "no": "No"
     }
 }
 
@@ -348,31 +372,43 @@ def copy_selected_text_to_clipboard(text):
 
 class PowerPasteApp(rumps.App):
     def __init__(self):
+        # Inicializa atributos essenciais logo no início
+        self.history = []  # Inicializa o histórico como lista vazia
+        
         try:
             # Carrega o idioma antes de inicializar o app
             load_language()
             
+            # Carrega as configurações
+            self.config = load_config()
+            
+            # Configura inicialização automática se necessário
+            if self.config.get('start_at_login', True):
+                set_start_at_login(True)
+            
+            # Verifica qual arquivo de ícone usar (preferindo o .icns se disponível)
+            icon_file = "icon.icns" if os.path.exists("icon.icns") else "icon.png"
+            
             super(PowerPasteApp, self).__init__(
                 name="Power Paste",
-                icon="icon.png",
+                icon=icon_file,
                 quit_button=None,  # Vamos criar nosso próprio botão de sair
-                template=True      # Ícone em preto e branco para se encaixar na barra de menus
+                template=False     # Ícone em preto e branco para se encaixar na barra de menus
             )
             
             # Configura atalho de teclado global
             self.hotkey = "control+command+v"
             
-            # Menu Vazio inicialmente
-            self.menu = ['']
-            
-            # Configure o menu
-            self.build_menu()
-            
             # Garante que o diretório temporário exista
             self.ensure_temp_dir()
             
             # Carrega o histórico
-            self.history = self.load_history()
+            historical_data = self.load_history() 
+            if historical_data:
+                self.history = historical_data
+            
+            # Constrói o menu inicial
+            self.build_menu()
             
             # Configura o timer para verificar a área de transferência
             self.timer = rumps.Timer(self.check_clipboard, 1)
@@ -380,31 +416,35 @@ class PowerPasteApp(rumps.App):
             
         except Exception as e:
             print(f"Erro na inicialização: {e}")
+            # Se ocorrer erro, mostra uma notificação
+            import traceback
+            traceback.print_exc()
     
     def build_menu(self):
         # Limpa o menu atual
-        self.menu.clear()
+        if hasattr(self, 'menu'):
+            self.menu.clear()
+        else:
+            # Certifica que o menu existe
+            self.menu = []
         
         # Adiciona os itens do histórico
         self.build_history_menu()
         
-        # Adiciona os itens do menu básico
-        separator = rumps.MenuItem(title=None)  # Separador
+        # Adiciona os itens do menu básico (com separador)
+        self.menu.add(rumps.separator)  # Usa separador nativo do rumps
+        
         clear_history = rumps.MenuItem(title=_("clear_history"))
-        settings_item = rumps.MenuItem(title=_("settings"))
         about_item = rumps.MenuItem(title=_("about"))
         quit_item = rumps.MenuItem(title=_("quit"))
         
         # Conecta os callbacks
         clear_history.set_callback(self.clear_history)
-        settings_item.set_callback(self.show_settings)
         about_item.set_callback(self.show_about)
         quit_item.set_callback(self.quit_app)
         
         # Adiciona items ao menu
-        self.menu.add(separator)
         self.menu.add(clear_history)
-        self.menu.add(settings_item)
         self.menu.add(about_item)
         self.menu.add(quit_item)
     
@@ -429,8 +469,8 @@ class PowerPasteApp(rumps.App):
 
     def load_history(self):
         """Carrega o histórico do arquivo."""
-        if os.path.exists(HISTORY_FILE):
-            try:
+        try:
+            if os.path.exists(HISTORY_FILE):
                 with open(HISTORY_FILE, 'r') as f:
                     history = json.load(f)
                     # Ordena por timestamp (mais recente primeiro)
@@ -439,9 +479,11 @@ class PowerPasteApp(rumps.App):
                         key=lambda x: datetime.strptime(x.get("timestamp", "2000-01-01 00:00:00"), "%Y-%m-%d %H:%M:%S"), 
                         reverse=True
                     )
-            except (json.JSONDecodeError, ValueError, KeyError, Exception) as e:
-                print(f"Erro ao carregar histórico: {e}")
-                return []
+        except (json.JSONDecodeError, ValueError, KeyError, Exception) as e:
+            print(f"Erro ao carregar histórico: {e}")
+            # Em caso de erro, retorna lista vazia
+            return []
+        # Se não existir arquivo ou qualquer outro caso, retorna lista vazia
         return []
 
     def save_history(self):
@@ -481,22 +523,33 @@ class PowerPasteApp(rumps.App):
 
     def rebuild_menu(self):
         """Reconstrói o menu completo da aplicação."""
-        # Limpa o menu atual, mas preserva o botão de sair
+        # Limpa o menu atual
         self.menu.clear()
         
         # Adiciona itens do histórico
         self.build_history_menu()
         
-        # Adiciona separador e opções de gerenciamento (fixas na parte inferior)
-        self.menu.add(None)  # Separador
-        self.menu.add(self.menu_clear)
-        self.menu.add(self.menu_about)
-        self.menu.add(self.menu_quit)
+        # Adiciona separador e opções de gerenciamento
+        self.menu.add(rumps.separator)  # Usa separador nativo do rumps
+        
+        clear_history = rumps.MenuItem(title=_("clear_history"))
+        about_item = rumps.MenuItem(title=_("about"))
+        quit_item = rumps.MenuItem(title=_("quit"))
+        
+        # Conecta os callbacks
+        clear_history.set_callback(self.clear_history)
+        about_item.set_callback(self.show_about)
+        quit_item.set_callback(self.quit_app)
+        
+        # Adiciona items ao menu
+        self.menu.add(clear_history)
+        self.menu.add(about_item)
+        self.menu.add(quit_item)
 
     def build_history_menu(self):
         """Constrói a parte do menu com os itens do histórico."""
         # Verifica se há itens no histórico
-        if not self.history:
+        if not hasattr(self, 'history') or not self.history:
             empty_item = rumps.MenuItem(_("clipboard_empty"))
             empty_item.set_callback(None)  # Torna não clicável
             self.menu.add(empty_item)
@@ -552,13 +605,7 @@ class PowerPasteApp(rumps.App):
                     self.menu.add(menu_item)
 
     def paste_text_item(self, sender):
-        """Cola o item selecionado ou mostra janela para seleção parcial."""
-        print("[DEBUG] paste_item chamado!")
-        rumps.notification(
-            "Power Paste", 
-            _("notice"), 
-            _("callback_called")
-        )
+        """Mostra uma janela para visualizar e copiar o texto selecionado."""
         try:
             idx = getattr(sender, '_idx', None)
             if idx is None or idx >= len(self.history):
@@ -570,7 +617,7 @@ class PowerPasteApp(rumps.App):
             if not text:
                 return
                 
-            # Mostra uma janela para permitir seleção parcial do texto
+            # Mostra uma janela para permitir visualização e cópia do texto
             self.show_text_selection_window(text)
             
         except Exception as e:
@@ -622,43 +669,36 @@ class PowerPasteApp(rumps.App):
     def show_text_selection_window(self, text):
         """Mostra uma janela para selecionar parte do texto."""
         try:
-            # Cria uma janela simples para mostrar o texto com pyobjc
+            # Escapa aspas e caracteres especiais para AppleScript
+            escaped_text = text.replace('"', '\\"').replace("\n", "\\n")
+
             script = f'''
             tell application "System Events"
-                set theText to "{text.replace('"', '\\"').replace('\n', '\\n')}"
-                set theResult to display dialog theText buttons {{"{_('cancel')}", "{_('copy')}"}} default button 2 with title "{_('text_preview')}"
-                set theButton to button returned of theResult
-                
-                if theButton is "{_('copy')}" then
-                    return "copy_all"
-                else
-                    return "cancel"
-                end if
+                set theText to "{escaped_text}"
+                display dialog theText buttons {{"Cancelar", "Copiar"}} default button 2 with title "Visualização de Texto"
             end tell
             '''
             
-            result = subprocess.run(['osascript', '-e', script], 
-                                   capture_output=True, text=True)
+            # Executa o script e verifica o resultado
+            subprocess.run(["osascript", "-e", script], check=False)
             
-            action = result.stdout.strip()
-            
-            if action == "copy_all":
-                # Copia o texto selecionado
-                if copy_text_to_clipboard_native(text):
-                    rumps.notification(
-                        "Power Paste", 
-                        _("notice"), 
-                        _("copy_success")
-                    )
-                else:
-                    rumps.notification(
-                        "Power Paste", 
-                        _("error"), 
-                        _("copy_error")
-                    )
+            # Copia o texto para a área de transferência de qualquer forma
+            if copy_text_to_clipboard_native(text):
+                rumps.notification(
+                    "Power Paste", 
+                    _("notice"), 
+                    _("copy_success")
+                )
             
         except Exception as e:
             print(f"Erro ao mostrar janela de seleção: {e}")
+            # Tenta copiar diretamente como fallback
+            if copy_text_to_clipboard_native(text):
+                rumps.notification(
+                    "Power Paste", 
+                    _("notice"), 
+                    _("copy_success")
+                )
     
     def clear_history(self, _=None):
         """Limpa todo o histórico."""
@@ -703,117 +743,244 @@ class PowerPasteApp(rumps.App):
             )
             
     def show_about(self, _):
-        about_window = rumps.Window(
-            message=f"{_('developed_by')}\n{_('version')}\n\n{_('linkedIn')}\n{_('github')}\n\n{_('language')}",
-            title=_("about"),
-            ok="OK"
-        )
-        about_window.run()
-    
+        """Mostra uma janela 'Sobre' nativa do macOS"""
+        try:
+            # Importa os módulos necessários do PyObjC
+            from AppKit import NSAlert, NSImage, NSString
+            from Foundation import NSMakeRect, NSURL
+            
+            # Cria um alerta nativo do macOS
+            alert = NSAlert.alloc().init()
+            alert.setAlertStyle_(0)  # Estilo informativo
+            alert.setShowsHelp_(False)
+            
+            # Define o título e o botão
+            alert.setMessageText_("Power Paste")
+            alert.setInformativeText_(
+                "O gerenciador de área de transferência elegante para macOS\n\n"
+                "Copie textos e imagens e acesse-os de forma rápida e intuitiva!\n\n"
+                "Versão 1.3 - Maio de 2025\n\n"
+                "Desenvolvido por Caio Castro\n"
+                "LinkedIn: linkedin.com/in/caiorcastro\n"
+                "GitHub: github.com/caiorcastro/Power-Paste"
+            )
+            
+            # Adiciona um botão OK
+            alert.addButtonWithTitle_("OK")
+            
+            # Tenta carregar o ícone se existir
+            icon_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "icon.png")
+            if os.path.exists(icon_path):
+                icon_image = NSImage.alloc().initWithContentsOfFile_(icon_path)
+                if icon_image:
+                    alert.setIcon_(icon_image)
+            
+            # Exibe o alerta em modo modal (bloqueante)
+            alert.runModal()
+            
+        except Exception as e:
+            print(f"Erro ao mostrar janela Sobre: {e}")
+            # Fallback para uma abordagem mais simples
+            rumps.notification(
+                "Power Paste", 
+                "Sobre", 
+                "Desenvolvido por Caio Castro - Versão 1.3"
+            )
+
     def show_settings(self, _):
-        # Carrega configurações atuais
-        config = load_config()
+        """Mostra a janela de configurações"""
+        global MAX_ITEMS_TO_SHOW, CURRENT_LANGUAGE
         
-        settings_window = rumps.Window(
-            message=f"{_('max_items_label')} {config.get('max_items', 25)}\n"
-                   f"{_('start_at_login_label')} {'✓' if config.get('start_at_login', True) else '✗'}\n"
-                   f"{_('language_label')} {_('language').split(':')[1].strip()}",
-            title=_("settings_title"),
-            dimensions=(300, 200)
-        )
-        
-        # Dropdown de idiomas
-        language_menu = [
-            "🇧🇷 Português do Brasil", 
-            "🇵🇹 Português de Portugal", 
-            "🇺🇸 English"
-        ]
-        settings_window.add_buttons("Cancel")
-        settings_window.add_buttons(_("save_button"))
-        
-        # Dropdown para número máximo de itens
-        max_items_options = ["10", "15", "20", "25", "30", "50", "100"]
-        current_max = str(config.get('max_items', 25))
-        if current_max not in max_items_options:
-            max_items_options.append(current_max)
-            max_items_options.sort(key=lambda x: int(x))
-        
-        # Índice da língua atual
-        current_lang = config.get('language', 'pt_BR')
-        lang_index = 0
-        if current_lang == "pt_PT":
-            lang_index = 1
-        elif current_lang == "en_US":
-            lang_index = 2
-        
-        # Adiciona campos ao formulário
-        settings_window.add_dropdown(max_items_options, max_items_options.index(current_max) if current_max in max_items_options else 3)
-        settings_window.add_dropdown(language_menu, lang_index)
-        settings_window.add_checkbox("Iniciar com o sistema", config.get('start_at_login', True))
-        
-        # Processa o resultado
-        response = settings_window.run()
-        if response.clicked == 1:  # Botão "Salvar"
-            try:
-                # Mapeia a resposta do dropdown para o código de idioma
-                selected_lang_index = response.dropdown[1]
-                lang_map = {
-                    0: "pt_BR",
-                    1: "pt_PT",
-                    2: "en_US"
-                }
-                selected_lang = lang_map.get(selected_lang_index, "pt_BR")
+        try:
+            # Obtém as configurações atuais
+            current_config = self.config.copy() if hasattr(self, 'config') else load_config()
+            
+            # Configurações atuais
+            max_items = current_config.get('max_items', MAX_ITEMS_TO_SHOW)
+            start_at_login = current_config.get('start_at_login', True)
+            current_language = current_config.get('language', CURRENT_LANGUAGE)
+            
+            # Mostra configurações mais simples com AppleScript
+            script_language = f'''
+            tell application "System Events"
+                set langOptions to {{"{_('language_pt_BR')}", "{_('language_pt_PT')}", "{_('language_en_US')}"}}
+                set langValues to {{"pt_BR", "pt_PT", "en_US"}}
+                set currentLangIndex to 1
                 
-                # Número máximo de itens
-                selected_max_items = int(max_items_options[response.dropdown[0]])
+                if "{current_language}" is "pt_BR" then
+                    set currentLangIndex to 1
+                else if "{current_language}" is "pt_PT" then
+                    set currentLangIndex to 2
+                else if "{current_language}" is "en_US" then
+                    set currentLangIndex to 3
+                end if
                 
-                # Atualiza configurações
-                new_config = {
-                    'max_items': selected_max_items,
-                    'start_at_login': response.checkbox,
-                    'language': selected_lang
-                }
+                set theLanguageChoice to choose from list langOptions ¬
+                    with title "{_('language_label')}" ¬
+                    with prompt "{_('settings_title')}" ¬
+                    default items {{item currentLangIndex of langOptions}} ¬
+                    OK button name "OK" ¬
+                    cancel button name "Cancel"
                 
-                # Salva configurações
-                if save_config(new_config):
-                    # Atualiza idioma imediatamente
-                    global CURRENT_LANGUAGE, MAX_ITEMS_TO_SHOW
-                    CURRENT_LANGUAGE = selected_lang
-                    MAX_ITEMS_TO_SHOW = selected_max_items
+                if theLanguageChoice is false then
+                    return "CANCEL"
+                else
+                    set languageIndex to 1
+                    repeat with i from 1 to count of langOptions
+                        if item 1 of theLanguageChoice is item i of langOptions then
+                            set languageIndex to i
+                            exit repeat
+                        end if
+                    end repeat
                     
-                    # Salva o idioma em um arquivo separado para compatibilidade
-                    os.makedirs(os.path.dirname(LANGUAGE_FILE), exist_ok=True)
-                    with open(LANGUAGE_FILE, 'w') as f:
-                        f.write(selected_lang)
+                    return item languageIndex of langValues
+                end if
+            end tell
+            '''
+            
+            # Obtém idioma
+            result_language = subprocess.run(['osascript', '-e', script_language], 
+                                            capture_output=True, text=True)
+            selected_language = result_language.stdout.strip()
+            
+            if selected_language == "CANCEL":
+                return
+            
+            # Script para inicialização automática
+            script_startup = f'''
+            tell application "System Events"
+                set startupOptions to {{"{_('yes')}", "{_('no')}"}}
+                set startupDefault to "{_('yes')}"
+                
+                if {str(start_at_login).lower()} is "false" then
+                    set startupDefault to "{_('no')}"
+                end if
+                
+                set theStartupChoice to choose from list startupOptions ¬
+                    with title "{_('start_at_login_label')}" ¬
+                    with prompt "{_('start_at_login_select')}" ¬
+                    default items {{startupDefault}} ¬
+                    OK button name "OK" ¬
+                    cancel button name "Cancel"
+                
+                if theStartupChoice is false then
+                    return "CANCEL"
+                else
+                    set selectedStartup to (item 1 of theStartupChoice is "{_('yes')}")
+                    return selectedStartup as string
+                end if
+            end tell
+            '''
+            
+            # Obtém configuração de inicialização
+            result_startup = subprocess.run(['osascript', '-e', script_startup], 
+                                          capture_output=True, text=True)
+            selected_startup = result_startup.stdout.strip()
+            
+            if selected_startup == "CANCEL":
+                return
+            
+            selected_startup_bool = (selected_startup.lower() == "true")
+            
+            # Script para número máximo de itens
+            script_max_items = f'''
+            tell application "System Events"
+                set maxItemsOptions to {{"10", "25", "50", "100"}}
+                set maxDefault to "25"
+                
+                if {max_items} is 10 then
+                    set maxDefault to "10"
+                else if {max_items} is 25 then
+                    set maxDefault to "25"
+                else if {max_items} is 50 then
+                    set maxDefault to "50"
+                else if {max_items} is 100 then
+                    set maxDefault to "100"
+                end if
+                
+                set theMaxItemsChoice to choose from list maxItemsOptions ¬
+                    with title "{_('max_items_label')}" ¬
+                    with prompt "{_('max_items_select')}" ¬
+                    default items {{maxDefault}} ¬
+                    OK button name "OK" ¬
+                    cancel button name "Cancel"
+                
+                if theMaxItemsChoice is false then
+                    return "CANCEL"
+                else
+                    return item 1 of theMaxItemsChoice
+                end if
+            end tell
+            '''
+            
+            # Obtém número máximo de itens
+            result_max_items = subprocess.run(['osascript', '-e', script_max_items], 
+                                            capture_output=True, text=True)
+            selected_max_items = result_max_items.stdout.strip()
+            
+            if selected_max_items == "CANCEL":
+                return
+            
+            max_item_count = int(selected_max_items)
+            
+            # Atualiza as configurações
+            new_config = current_config.copy()
+            new_config['language'] = selected_language
+            new_config['start_at_login'] = selected_startup_bool
+            new_config['max_items'] = max_item_count
+            
+            # Salva as configurações
+            if save_config(new_config):
+                # Aplica a configuração de inicialização automática
+                set_start_at_login(selected_startup_bool)
+                
+                # Notifica o usuário
+                notify_script = f'''
+                tell application "System Events"
+                    display notification "{_('settings_saved')}" with title "Power Paste"
+                end tell
+                '''
+                subprocess.run(['osascript', '-e', notify_script], check=False)
+                
+                # Se mudou de idioma, precisa reiniciar para aplicar
+                if selected_language != current_language:
+                    script_restart = f'''
+                    tell application "System Events"
+                        set theResponse to display dialog "{_('restart_required')}" ¬
+                            with title "{_('settings_title')}" ¬
+                            buttons {{"Later", "Restart Now"}} ¬
+                            default button "Restart Now" ¬
+                            with icon note
+                        
+                        if button returned of theResponse is "Restart Now" then
+                            return "RESTART"
+                        end if
+                    end tell
+                    '''
                     
-                    # Configura início automático
-                    set_start_at_login(response.checkbox)
+                    restart_result = subprocess.run(['osascript', '-e', script_restart], 
+                                                  capture_output=True, text=True)
                     
-                    # Aviso de sucesso
-                    success_window = rumps.Window(
-                        message=f"{_('settings_saved')}\n{_('restart_required')}",
-                        title=_("notice"),
-                        ok="OK"
-                    )
-                    success_window.run()
-                    
-                    # Reconstrói o menu
-                    self.build_menu()
+                    if restart_result.stdout.strip() == "RESTART":
+                        # Reinicia o aplicativo
+                        app_path = os.path.join(os.path.expanduser("~/Applications"), "Power Paste.app")
+                        if not os.path.exists(app_path):
+                            app_path = "/Applications/Power Paste.app"
+                        
+                        # Encerra esta instância e inicia uma nova
+                        subprocess.Popen(['open', app_path])
+                        rumps.quit_application()
                 else:
-                    error_window = rumps.Window(
-                        message="Erro ao salvar configurações",
-                        title=_("error"),
-                        ok="OK"
-                    )
-                    error_window.run()
-            except Exception as e:
-                error_window = rumps.Window(
-                    message=f"Erro: {str(e)}",
-                    title=_("error"),
-                    ok="OK"
-                )
-                error_window.run()
-    
+                    # Apenas atualiza as configurações em tempo real
+                    MAX_ITEMS_TO_SHOW = max_item_count
+                    self.config = new_config
+                    self.rebuild_menu()
+                
+        except Exception as e:
+            print(f"Erro ao mostrar configurações: {e}")
+            import traceback
+            traceback.print_exc()
+
     def check_clipboard(self, _):
         """Verifica a área de transferência por novos conteúdos."""
         global LAST_ITEM_HASH
