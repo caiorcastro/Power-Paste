@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/Version-1.3-orange?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/Languages-PT--Normal%20|%20PT--Arcaico%20|%20EN-yellow?style=flat-square" alt="Languages">
+  <img src="https://img.shields.io/badge/Languages-PT--Normal%20|%20PT--Arcaico-yellow?style=flat-square" alt="Languages">
 </p>
 
 ## 📋 Sobre o Projeto
@@ -32,7 +32,7 @@
 - 🔍 Visualização e edição de texto antes de colar
 - 🌙 Integração nativa com macOS
 - 🔐 Armazenamento local (privacidade garantida - seus dados nunca saem do seu Mac)
-- 🌐 Suporte a três idiomas: Português Normal (Brasil) (🇧🇷), Português Arcaico (Guiana Brasileira/Portugal) (🇵🇹) e Inglês (🇺🇸)
+- 🌐 Suporte a dois idiomas: Português Normal (Brasil) (🇧🇷) e Português Arcaico (Guiana Brasileira/Portugal) (🇵🇹)
 - ⚙️ Menu de configurações completo para personalizar o aplicativo
 - 🚀 Leve e eficiente - consome poucos recursos do sistema
 
@@ -105,7 +105,7 @@ cp -R dist/Power\ Paste.app ~/Applications/
 
 O Power Paste oferece um menu completo de configurações com as seguintes opções:
 
-- 🌐 **Idioma**: Escolha entre Português Normal (Brasil), Português Arcaico (Guiana Brasileira/Portugal) ou Inglês
+- 🌐 **Idioma**: Escolha entre Português Normal (Brasil), Português Arcaico (Guiana Brasileira/Portugal)
 - 🔄 **Inicialização com o Sistema**: Configure se o aplicativo deve iniciar automaticamente com o macOS
 - 📊 **Número Máximo de Itens**: Defina quantos itens deseja manter no histórico (10, 25, 50 ou 100)
 
@@ -179,6 +179,6 @@ Caio Castro - [LinkedIn](https://www.linkedin.com/in/caiorcastro/)
 
 <p align="center">
   <i>Um aplicativo elegante para gerenciar seu histórico de área de transferência.</i><br>
-  Desenvolvido com ❤️ por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a><br>
+  Desenvolvido por <a href="https://www.linkedin.com/in/caiorcastro/">Caio Castro</a><br>
   <small>Maio de 2025</small>
 </p> 
